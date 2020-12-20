@@ -177,3 +177,13 @@ select avg(b) from t group by a
 
 
 
+## 流式与mini-batch处理框架
+### storm
+docker 部署，组件包含zookeeper，storm。目前有一个zookeeper节点，一个storm nimbus（主:some-nimbus）节点，一个 storm  supervisor（从）节点，一个storm ui节点。
+#### 向集群提交topology
+
+```bash
+docker run --link some-nimbus:nimbus -it --rm -v $(pwd)/topology.jar:/topology.jar storm storm jar /topology.jar org.apache.storm.starter.WordCountTopology topology
+```
+
+- 向主节点some-nimbus提交topology（jar包）并执行
