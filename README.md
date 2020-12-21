@@ -184,6 +184,12 @@ select avg(b) from t group by a
 | 并       |          |                                                              |          |
 | 差       |          |                                                              |          |
 
+![naturalJoin](/home/xingzheng/Distributed-Operator/doc/image/natualJoin.png)
+
+
+
+
+
 **基于storm的问题**：
 
 Storm是无状态的，中间计算结果等等都保存在内存中，若表很大，对于需要全表扫描的算子来说，内存可能会爆掉。
