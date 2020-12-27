@@ -29,13 +29,35 @@ docker run --link some-nimbus:nimbus -it --rm -v $(pwd)/topology.jar:/topology.j
 
 - 向主节点some-nimbus提交topology（jar包）并执行
 
-## 方案汇总
+## 存储方案调研
 
-### 基于storm
+### 使用KV单节点
+
+#### levelDB / RocksDB
+
+
+
+## 方案汇总 
+
+方案划分按照表的大小来进行，针对于不同的情况选取不同的方案和框架来做。
+
+### 与内存大小无关，天然支持流式处理
+
+投影&选择&并
+
+### 基于索引的方案
+
+不是很明确
+
+### 基于内存的方案 ： storm
+
+- 对于双目算子而言：若其中较小的关系可以被完全的用内存兜住，那么也在完成最初的hash之后，也能够支持流式输出。
+- 排序算子：使用storm框架模拟多路归并
+- 集合&聚集 && 并&差&自然连接： 由于可以直接使用storm进行模拟，所以多路归并似乎不需要。
 
 **基于storm的问题**：
 
-Storm是无状态的，中间计算结果等等都保存在内存中，表的大小会受限制于内存。若计算节点可以无限制扩容。
+- Storm是无状态的，中间计算结果等等都保存在内存中，表的大小会受限制于内存。
 
 #### 单目算子
 
@@ -45,7 +67,7 @@ Storm是无状态的，中间计算结果等等都保存在内存中，表的大
 | 投影     | 一趟算法，读取多个Batch进入内存，然后进行处理 | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持                                        |
 | 排序     |                                               | **Storm**：多个Spout读取数据，通过通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行排序。这一阶段完成后，最后由一个汇总的bolt进行总的排序，类似于多路归并的第二阶段，通过**Tuple#getSourceComponent**获取源bolt. | 流式？                                      |
 | 集合     |                                               | **Storm**: 多个Spout 读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部，若内存中无此项，则输出，若内存中有，则什么也不做。 | 支持                                        |
-| 聚集     |                                               | **Storm**: 多个spout读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行聚合操作,在cleanup阶段输出。**不同的聚合函数在后续处理时有细微的差别。** | 可以使用Storm实现，**但是整体逻辑是批处理** |
+| 聚合     |                                               | **Storm**: 多个spout读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行聚合操作,在cleanup阶段输出。**不同的聚合函数在后续处理时有细微的差别。** | 可以使用Storm实现，**但是整体逻辑是批处理** |
 
 <img src="./doc/Image/filter&projector.png" alt="filter&projector" style="zoom: 67%;" />
 
