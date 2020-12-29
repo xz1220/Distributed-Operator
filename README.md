@@ -55,11 +55,11 @@ docker run --link some-nimbus:nimbus -it --rm -v $(pwd)/topology.jar:/topology.j
 
 ### 与内存大小无关，天然支持流式处理的算子
 
-| 单目算子 | 分布式方案                                                   | 流式支持                                    | 开销分析 | 存储分析 |
+| **单目算子** | **分布式方案**                                               | **流式支持**                                | **开销分析** | **存储分析** |
 | -------- | ------------------------------------------------------------ | ------------------------------------------- | ---------- | ---------- |
-| 选择     | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持                                        | B+2Bt | 与大小无关 |
-| 投影     | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持 | B+2Bt | 与大小无关 |
-| 并 | **storm**：多个spout直接读取关系R和S，用shuffleGrouping随机分配给多个bolt，直接输出 | 支持 | B(R)+B(S)+2B(R)t+2B(S)*t | 与大小无关 |
+| **选择** | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持                                        | **B+2Bt** | 与大小无关 |
+| **投影** | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持 | **B+2Bt** | 与大小无关 |
+| **并** | **storm**：多个spout直接读取关系R和S，用shuffleGrouping随机分配给多个bolt，直接输出 | 支持 | **B(R)+B(S)+2B(R)t+2B(S)*t** | 与大小无关 |
 
 ##### 图示
 
@@ -83,9 +83,9 @@ docker run --link some-nimbus:nimbus -it --rm -v $(pwd)/topology.jar:/topology.j
 
 | 单目算子 | 分布式方案                                                   | 流式支持                                    | 开销分析 | 存储分析 |
 | :------- | ------------------------------------------------------------ | ------------------------------------------- | ---------- | ---------- |
-| **排序** | **Storm**：多个Spout读取数据，通过通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行排序。这一阶段完成后，最后由一个汇总的bolt进行总的排序，类似于多路归并的第二阶段，通过**Tuple#getSourceComponent**获取源bolt. | 支持                                    | **B+3B*t** | **K*M** |
-| **集合** | **Storm**: 多个Spout 读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部，若内存中无此项，则输出，若内存中有，则什么也不做。 | 支持                                        | **B+2B*t** | **K*M** |
-| **聚合** | **Storm**: 多个spout读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行聚合操作,在cleanup阶段输出。**不同的聚合函数在后续处理时有细微的差别。** | 可以使用Storm实现，**但是整体逻辑是批处理** | **B+2B*t** | **K*M** |
+| **排序** | **Storm**：多个Spout读取数据，通过通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行排序。这一阶段完成后，最后由一个汇总的bolt进行总的排序，类似于多路归并的第二阶段，通过**Tuple#getSourceComponent**获取源bolt. | 支持                                    | **B+3B*t** | **B(R)<= K*M** |
+| **集合** | **Storm**: 多个Spout 读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部，若内存中无此项，则输出，若内存中有，则什么也不做。 | 支持                                        | **B+2B*t** | **B(R)<= K*M** |
+| **聚合** | **Storm**: 多个spout读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行聚合操作,在cleanup阶段输出。**不同的聚合函数在后续处理时有细微的差别。** | 可以使用Storm实现，**但是整体逻辑是批处理** | **B+2B*t** | **B(R)<= K*M** |
 
 
 
@@ -99,11 +99,11 @@ docker run --link some-nimbus:nimbus -it --rm -v $(pwd)/topology.jar:/topology.j
 
 <u>**假设相比于R来说，S是较小的**</u>
 
-| 双目算子     | 分布式方案                                                   | 流式支持 | 开销分析                         | 存储分析 |
-| ------------ | ------------------------------------------------------------ | -------- | -------------------------------- | -------- |
-| **自然连接** | **Storm**：  多个spout读取关系S，并用fieldGrouping的方式发往bolt进行hash存储，完成后发往下一阶段的bolt，下一段的bolt接受多个stream，并进行匹配计算，匹配成功则进行连接并输出。 | 支持     | **B(S)+B(R)+B(S)t+L(S)t+2B(R)t** |          |
-| **交**       | **storm**：多个spout读取关系S，并用fieldGrouping的方式发往bolt进行hash存储，完成后发往下一阶段的bolt，下一段的bolt接受多个stream，进行s的分片与R全表匹配,匹配成功后输出并hash表计数减一，直至0。 | 支持     | **B(S)+B(R)+B(S)t+L(S)t+2B(R)t** |          |
-| **差**       | **storm**：多个spout读取关系S，并用fieldGrouping的方式发往bolt进行hash存储，完成后发往下一阶段的bolt，下一段的bolt接受多个stream，进行s的分片与R全表匹配.匹配成功计数器-1，不成功或者计数器为0时，输出元组。 | 支持     | **B(S)+B(R)+B(S)t+L(S)t+2B(R)t** |          |
+| 双目算子     | 分布式方案                                                   | 流式支持 | 开销分析                         | 存储分析                 |
+| ------------ | ------------------------------------------------------------ | -------- | -------------------------------- | ------------------------ |
+| **自然连接** | **Storm**：  多个spout读取关系S，并用fieldGrouping的方式发往bolt进行hash存储，完成后发往下一阶段的bolt，下一段的bolt接受多个stream，并进行匹配计算，匹配成功则进行连接并输出。 | 支持     | **B(S)+B(R)+B(S)t+L(S)t+2B(R)t** | B(R)无要求;**B(S)<=K*M** |
+| **交**       | **storm**：多个spout读取关系S，并用fieldGrouping的方式发往bolt进行hash存储，完成后发往下一阶段的bolt，下一段的bolt接受多个stream，进行s的分片与R全表匹配,匹配成功后输出并hash表计数减一，直至0。 | 支持     | **B(S)+B(R)+B(S)t+L(S)t+2B(R)t** | B(R)无要求;**B(S)<=K*M** |
+| **差**       | **storm**：多个spout读取关系S，并用fieldGrouping的方式发往bolt进行hash存储，完成后发往下一阶段的bolt，下一段的bolt接受多个stream，进行s的分片与R全表匹配.匹配成功计数器-1，不成功或者计数器为0时，输出元组。 | 支持     | **B(S)+B(R)+B(S)t+L(S)t+2B(R)t** | B(R)无要求;**B(S)<=K*M** |
 
 ##### 图示
 
