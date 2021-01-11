@@ -59,7 +59,7 @@ docker run --link some-nimbus:nimbus -it --rm -v $(pwd)/topology.jar:/topology.j
 | -------- | ------------------------------------------------------------ | ------------------------------------------- | ---------- | ---------- |
 | **选择** | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持                                        | **B+2Bt** | 与大小无关 |
 | **投影** | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持 | **B+2Bt** | 与大小无关 |
-| **并** | **storm**：多个spout直接读取关系R和S，用shuffleGrouping随机分配给多个bolt，直接输出 | 支持 | **B(R)+B(S)+2B(R)t+2B(S)*t** | 与大小无关 |
+| **并** | **storm**：多个spout直接读取关系R和S，用shuffleGrouping随机分配给多个bolt，直接输出 | 支持 | **B(R)+B(S)+2B(R)t+2B(S)t** | 与大小无关 |
 
 ##### 图示
 
