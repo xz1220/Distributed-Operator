@@ -29,6 +29,12 @@ docker run --link some-nimbus:nimbus -it --rm -v $(pwd)/topology.jar:/topology.j
 
 - 向主节点some-nimbus提交topology（jar包）并执行
 
+#### Storm多语言支持
+
+- java原生支持This page documents sections of the migration guide for each component in order for users to migrate effectively
+- JS, Python, Ruby 官方提供类库支持
+- go 需要使用第三方库 gostorm（个人维护），定义topology并用java打包成jar包，提交给storm集群
+
 ## 方案汇总
 
 ### 基于storm
@@ -43,7 +49,7 @@ Storm是无状态的，中间计算结果等等都保存在内存中，表的大
 | -------- | --------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------- |
 | 选择     | 一趟算法，读取多个Batch进入内存，然后进行处理 | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持                                        |
 | 投影     | 一趟算法，读取多个Batch进入内存，然后进行处理 | **Storm**: 多个Spout读取数据，通过ShuffleGrouping的方式随机分配给多个Bolt消费，流式输出结果。 | 支持                                        |
-| 排序     |                                               | **Storm**：多个Spout读取数据，通过通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行排序。这一阶段完成后，最后由一个汇总的bolt进行总的排序，类似于多路归并的第二阶段，通过**Tuple#getSourceComponent**获取源bolt. | 流式？                                      |
+| 排序     |                                               | **Storm**：1. 多个Spout读取数据，通过通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行排序。2. 这一阶段完成后，最后由一个汇总的bolt进行总的排序，类似于多路归并的第二阶段，通过**Tuple#getSourceComponent**获取源bolt. | 一阶段不支持流式，二阶段支持流式            |
 | 集合     |                                               | **Storm**: 多个Spout 读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部，若内存中无此项，则输出，若内存中有，则什么也不做。 | 支持                                        |
 | 聚集     |                                               | **Storm**: 多个spout读取数据，通过fieldsGrouping的方式按field将具有相同的值的tuple发送给同一个bolt, 单个bolt内部进行聚合操作,在cleanup阶段输出。**不同的聚合函数在后续处理时有细微的差别。** | 可以使用Storm实现，**但是整体逻辑是批处理** |
 
