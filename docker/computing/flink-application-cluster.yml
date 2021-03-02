@@ -4,9 +4,9 @@ services:
     image: flink:1.12.0-scala_2.11
     ports:
       - "8081:8081"
-    command: standalone-job --job-classname com.job.ClassName [--job-id <job id>] [--fromSavepoint /path/to/savepoint [--allowNonRestoredState]] [job arguments]
-    volumes:
-      - /host/path/to/job/artifacts:/opt/flink/usrlib
+    # command: standalone-job --job-classname com.job.ClassName [--job-id <job id>] [--fromSavepoint /path/to/savepoint [--allowNonRestoredState]] [job arguments]
+    command: standalone-job --job-classname WordCount.jar
+      - /home/xingzheng/Distributed-Operator/job/batch:/opt/flink/usrlib
     environment:
       - |
         FLINK_PROPERTIES=
@@ -20,7 +20,7 @@ services:
     command: taskmanager
     scale: 1
     volumes:
-      - /host/path/to/job/artifacts:/opt/flink/usrlib
+      - /home/xingzheng/Distributed-Operator/job/batch:/opt/flink/usrlib
     environment:
       - |
         FLINK_PROPERTIES=
