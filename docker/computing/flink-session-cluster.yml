@@ -1,4 +1,4 @@
-version: "2.2"
+version: "3.9"
 services:
   jobmanager:
     image: flink:1.12.0-scala_2.11
@@ -9,6 +9,15 @@ services:
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
+    deploy:
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 1G
+        reservations:
+          cpus: 0.05
+          memory: 500M
+
 
   taskmanager:
     image: flink:1.12.0-scala_2.11
@@ -21,3 +30,11 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
         taskmanager.numberOfTaskSlots: 4
+    deploy:
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 1G
+        reservations:
+          cpus: 0.05
+          memory: 500M
