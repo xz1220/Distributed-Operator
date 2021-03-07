@@ -18,7 +18,7 @@ docker-compose configuration should be like this:
 <summary><strong>Session model</strong></summary>
 Under the session model, we can use multiple ways to start jobs, using web UI or CLI command.
 CLI command like this:
-```shell
+```sh
 $ JOB_CLASS_NAME="com.job.ClassName"
 $ JM_CONTAINER=$(docker ps --filter name=jobmanager --format={{.ID}}))
 $ docker cp path/to/jar "${JM_CONTAINER}":/job.jar
