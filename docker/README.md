@@ -34,5 +34,37 @@ $ docker exec -t -i "${JM_CONTAINER}" flink run -d -c ${JOB_CLASS_NAME} /job.jar
 </details>
 
 ## hbase
+fork from the [big-data-europe/docker-hbase](https://github.com/big-data-europe/docker-hbase), and update the hbase version to 2.0.0
+<details>
+<summary><strong>Build your own Hbase image</strong></summary>
 
+1. enter ./docker/storage/base
+2. edit the dockerfile and entrypoint.sh
+3. build your own image
+
+command like this:
+```shell
+
+cd ./docker/base
+vim < Dockerfile or entrypoint>
+docker build -t <your image name:version> .
+
+```
+
+</details>
+
+In the docker-compose-distributed-local.yml, we define a hadooop cluster and Hbase cluster. And we sink hadoop data to local filesystem, such as ./docker/data/*.
+
+run and distory the cluster like this:
+
+```shell
+
+cd <project path>
+# run the hbase cluster backend.
+docker-compose -f ./docker/storage/docker-compose-distributed-local.yml up -d 
+# stop or distroy cluster
+docker-compose -f ./docker/storage/docker-compose-distributed-local.yml stop
+docker-compose -f ./docker/storage/docker-compose-distributed-local.yml down
+
+```
 
