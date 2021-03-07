@@ -13,7 +13,7 @@ docker-compose configuration should be like this:
 ```
 </details>
 
-**Most of time ,we use session model, cause we need to upload the .Jar several times.**
+**Most of time ,we use session model, cause we need to upload the different *.Jar several times.**
 <details>
 <summary><strong>Session model</strong></summary>
 Under the session model, we can use multiple ways to start jobs, using web UI or CLI command.
