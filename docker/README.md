@@ -24,5 +24,20 @@ $ JM_CONTAINER=$(docker ps --filter name=jobmanager --format={{.ID}}))
 $ docker cp path/to/jar "${JM_CONTAINER}":/job.jar
 $ docker exec -t -i "${JM_CONTAINER}" flink run -d -c ${JOB_CLASS_NAME} /job.jar
 ```
+
+```groovy
+    repositories {
+        // for access from China, you may need to uncomment this line
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+        maven {
+            url "https://repository.apache.org/content/repositories/snapshots/"
+            mavenContent {
+                snapshotsOnly()
+            }
+        }
+    }
+```
+
 </details>
 
