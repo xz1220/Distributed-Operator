@@ -68,3 +68,59 @@ docker-compose -f ./docker/storage/docker-compose-distributed-local.yml down
 
 ```
 
+## combine the flink and hbase
+
+As the restriction of version of flink-hbase maven-package, the version of flink used in the cluster is a little bit from the before. flinkHbase.yml is the configuration of clusters. Version details as following:
+- flink: v7.2
+- hbase: v2.0.0
+- hadoop: v2.7.4
+
+<details>
+<summary><strong>some steps before using</strong></summary>
+Of course, you need to install docker and docker-compose. and you need to edit the flinkHbase.yml to using you own image. 
+Under the path ./computing, editHosts.sh add the <\ip, hosts\> of Hbase-master and Hbase-regionServer to /etc/hosts, so that your flink jobs can access the hbase cluster. Howerver, when you create the flink container, the image will recreate the /etc/hosts. 
+So one of solutions is to run this script in the container. It is also noticiable that flink cluster will create a specfic network, differing from the docker network, unless you allocate a ip_address to the container in the config file.
+Like you see in the flinkHbase.yml:
+
+```yml
+  jobmanager:
+    image: danxing/flink:latest
+    expose:
+      - "6123"
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    links:
+      - zoo:zookeeper
+      - hbase-master
+      - hbase-region:hbase-regionserver
+    networks:
+      flinkHbase: 
+        ipv4_address: 172.27.0.10   # allocate a ipv4 address
+
+  taskmanager:
+    image: danxing/flink:latest
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    links:
+      - "jobmanager:jobmanager"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    links:
+      - zoo:zookeeper
+      - hbase-master
+      - hbase-region:hbase-regionserver
+    networks:
+      flinkHbase: 
+        ipv4_address: 172.27.0.11   # allocate a ipv4 address
+```
+
+</details>
+
+
