@@ -14,8 +14,8 @@ public class FlinkHBaseDemo {
      */
     public static void main(String[] args) throws Exception {
         HBaseOnFlinkBatchProcessingJava hofbp = new HBaseOnFlinkBatchProcessingJava();
-        hofbp.readFromHBaseWithTableInputFormat();
-        // hofbp.write2HBaseWithOutputFormat();
+        // hofbp.readFromHBaseWithTableInputFormat();
+        hofbp.write2HBaseWithOutputFormat();
 
     //    HBaseOnFlinkStreamingJava hofs = new HBaseOnFlinkStreamingJava();
     // //    hofs.write2HBaseWithRichSinkFunction();

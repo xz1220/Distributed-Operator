@@ -15,23 +15,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <classesDirectory>target/classes/</classesDirectory>
-          <archive>
-            <manifest>
-              <mainClass>cn.xingzheng.HbaseOnFlink.FlinkHBaseDemo</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <manifestEntries>
-            <Class-Path>.</Class-Path>
-          </manifestEntries>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.3</version>
         <executions>

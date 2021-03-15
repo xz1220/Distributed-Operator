@@ -29,7 +29,7 @@ public class HBaseInputFormatJava extends CustomTableInputFormat<Tuple2<String, 
         Connection conn = null;
         org.apache.hadoop.conf.Configuration config = HBaseConfiguration.create();
 
-        config.set(HConstants.ZOOKEEPER_QUORUM, "192.168.32.8");
+        config.set(HConstants.ZOOKEEPER_QUORUM, "172.27.0.7");
         config.set(HConstants.ZOOKEEPER_CLIENT_PORT, "2181");
         config.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 30000);
         config.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, 30000);

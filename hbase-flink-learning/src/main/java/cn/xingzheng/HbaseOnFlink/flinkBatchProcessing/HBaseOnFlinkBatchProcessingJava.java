@@ -45,7 +45,7 @@ public class HBaseOnFlinkBatchProcessingJava {
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
         //2.定义数据
-        DataSet<String> dataSet = env.fromElements("103,zhangsan,20", "104,lisi,21", "105,wangwu,22", "106,zhaolilu,23");
+        DataSet<String> dataSet = env.fromElements("111,zhangsan,20", "114,lisi,21", "115,wangwu,22", "116,zhaolilu,23");
         dataSet.output(new HBaseOutputFormatJava());
         //运行下面这句话，程序才会真正执行，这句代码针对的是data sinks写入数据的
         env.execute();

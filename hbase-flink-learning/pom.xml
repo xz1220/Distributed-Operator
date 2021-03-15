@@ -164,24 +164,24 @@
                 </configuration>
             </plugin>
             
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <classesDirectory>target/classes/</classesDirectory>
-                    <archive>
-                        <manifest>
-                            <!-- <mainClass>cn.xingzheng.HbaseOnJava.HBaseJavaApiDemo</mainClass> -->
-                            <mainClass>cn.xingzheng.HbaseOnFlink.FlinkHBaseDemo</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <manifestEntries>
-                        <Class-Path>.</Class-Path>
-                    </manifestEntries>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <classesDirectory>target/classes/</classesDirectory>-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            &lt;!&ndash; <mainClass>cn.xingzheng.HbaseOnJava.HBaseJavaApiDemo</mainClass> &ndash;&gt;-->
+<!--                            <mainClass>cn.xingzheng.HbaseOnFlink.FlinkHBaseDemo</mainClass>-->
+<!--                        </manifest>-->
+<!--                    </archive>-->
+<!--                    <descriptorRefs>-->
+<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                    </descriptorRefs>-->
+<!--                    <manifestEntries>-->
+<!--                        <Class-Path>.</Class-Path>-->
+<!--                    </manifestEntries>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
