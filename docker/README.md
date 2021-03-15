@@ -78,8 +78,11 @@ As the restriction of version of flink-hbase maven-package, the version of flink
 <details>
 <summary><strong>some steps before using</strong></summary>
 Of course, you need to install docker and docker-compose. and you need to edit the flinkHbase.yml to using you own image. 
+
 Under the path ./computing, editHosts.sh add the <\ip, hosts\> of Hbase-master and Hbase-regionServer to /etc/hosts, so that your flink jobs can access the hbase cluster. Howerver, when you create the flink container, the image will recreate the /etc/hosts. 
+
 So one of solutions is to run this script in the container. It is also noticiable that flink cluster will create a specfic network, differing from the docker network, unless you allocate a ip_address to the container in the config file.
+
 Like you see in the flinkHbase.yml:
 
 ```yml
@@ -122,5 +125,21 @@ Like you see in the flinkHbase.yml:
 ```
 
 </details>
+
+Now, you can bulid the cluster like this:
+
+```shell
+cd <project_path>
+docker-compose --compatibility -f ./docker/flinkHbase.yml up
+
+# after you buld the Job.jar, you can submit it to the cluster as following
+JOB_CLASS_NAME="cn.xingzheng.HbaseOnFlink.FlinkHBaseDemo"
+JM_CONTAINER=$(docker ps --filter name=jobmanager --format={{.ID}})
+docker cp ./target/hbase-test-1.0-SNAPSHOT.jar "${JM_CONTAINER}":/job.jar
+docker exec -t -i "${JM_CONTAINER}" flink run -d -c ${JOB_CLASS_NAME} /job.jar
+
+```
+
+
 
 
