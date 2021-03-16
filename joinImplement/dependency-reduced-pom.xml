@@ -26,8 +26,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>cn.xingzheng.HbaseOnJava.HBaseJavaApiDemo</mainClass>
-                  <mainClass>cn.xingzheng.HbaseOnFlink.FlinkHBaseDemo</mainClass>
+                  <mainClass>cn.xingzheng.main</mainClass>
                 </transformer>
                 <transformer>
                   <resource>reference.conf</resource>

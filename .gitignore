@@ -5,5 +5,5 @@ docker/data/*
 docker/storage/base/asserts/
 
 # ignore the *.jar
-hbase-flink-learning/target/*
+joinImplement/target/*
 

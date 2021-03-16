@@ -1,4 +1,4 @@
-package cn.xingzheng.HbaseOnJava;
+package cn.xingzheng.Utils;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
@@ -362,7 +362,7 @@ public class HBaseJavaApiDemo {
 
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main() throws Exception{
         //创建表（只有一个列簇）
 //        createTableOne();
 
