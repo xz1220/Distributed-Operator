@@ -37,7 +37,6 @@ public class HBaseJavaApiDemo {
         if (!admin.tableExists(TableName.valueOf("test"))){
             TableName tableName = TableName.valueOf("test");
             //表描述器构造器
-
             TableDescriptorBuilder tdb = TableDescriptorBuilder.newBuilder(tableName);
             //列族描述器构造器
             ColumnFamilyDescriptorBuilder cdb = ColumnFamilyDescriptorBuilder.newBuilder(Bytes.toBytes("user"));
@@ -108,6 +107,19 @@ public class HBaseJavaApiDemo {
         table.close();
         System.out.println("add data Success!");
     }
+
+    /**
+     * 构造插入数据
+     */
+
+     public static Map<String,Object> insertValueFactory(String rowKey, String columnFamily, String columnName, String columnValue) throws Exception {
+         Map<String,Object> map=new HashMap<String,Object>();
+         map.put("rowKey",rowKey);
+         map.put("columnFamily",columnFamily);
+         map.put("columnName",columnName);
+         map.put("columnValue",columnValue);
+         return map;
+     }
 
     /**
      * 添加数据（多个rowKey，多个列族）
@@ -362,75 +374,112 @@ public class HBaseJavaApiDemo {
 
     }
 
-    public static void main() throws Exception{
+    public static void insertCasesForStream() throws Exception{
         //创建表（只有一个列簇）
 //        createTableOne();
 
-        // 创建表(包含多个列簇)
-        TableName tableName = TableName.valueOf("test");
-        String[] columnFamilys = { "article", "author" };
+        // 创建表：
+        // Table: grades
+        // rowkey:userID  columnfamily: details
+        // UserID        subjects      grades
+
+        TableName tableName = TableName.valueOf("gradesV1");
+
+        String[] columnFamilys = {"English", "Chinese", "Math"};
         createTable(tableName, columnFamilys);
 
+        // 添加数据
+        // List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        // list.add(insertValueFactory("001","English","english", "11"));
+        // list.add(insertValueFactory("001","Chinese","chinese", "22"));
+        // list.add(insertValueFactory("001","Math","math", "33"));
+        // list.add(insertValueFactory("002","English","english", "97"));
+        // list.add(insertValueFactory("002","Chinese","chinese", "98"));
+        // list.add(insertValueFactory("002","Math","math", "98"));
+
+        // // 循环插入数据
+        // for() {
+
+        // }
+
+        // 更新到表中
+        // insertMany(tableName,list);
+
+        TableName tableName2 = TableName.valueOf("name");
+        String[] columnFamilysForName = {"Name"};
+        createTable(tableName2, columnFamilysForName);
+
         //添加数据
-        List<Map<String,Object>> listMap=new ArrayList<Map<String, Object>>();
-        Map<String,Object> map1=new HashMap<String,Object>();
-        map1.put("rowKey","ce_shi1");
-        map1.put("columnFamily","article");
-        map1.put("columnName","title");
-        map1.put("columnValue","Head First HBase");
-        listMap.add(map1);
-        Map<String,Object> map2=new HashMap<String,Object>();
-        map2.put("rowKey","ce_shi1");
-        map2.put("columnFamily","article");
-        map2.put("columnName","content");
-        map2.put("columnValue","HBase is the Hadoop database");
-        listMap.add(map2);
-        Map<String,Object> map3=new HashMap<String,Object>();
-        map3.put("rowKey","ce_shi1");
-        map3.put("columnFamily","article");
-        map3.put("columnName","tag");
-        map3.put("columnValue","Hadoop,HBase,NoSQL");
-        listMap.add(map3);
-        Map<String,Object> map4=new HashMap<String,Object>();
-        map4.put("rowKey","ce_shi1");
-        map4.put("columnFamily","author");
-        map4.put("columnName","name");
-        map4.put("columnValue","nicholas");
-        listMap.add(map4);
-        Map<String,Object> map5=new HashMap<String,Object>();
-        map5.put("rowKey","ce_shi1");
-        map5.put("columnFamily","author");
-        map5.put("columnName","nickname");
-        map5.put("columnValue","lee");
-        listMap.add(map5);
-        Map<String,Object> map6=new HashMap<String,Object>();
-        map6.put("rowKey","ce_shi2");
-        map6.put("columnFamily","author");
-        map6.put("columnName","name");
-        map6.put("columnValue","spark");
-        listMap.add(map6);
-        Map<String,Object> map7=new HashMap<String,Object>();
-        map7.put("rowKey","ce_shi2");
-        map7.put("columnFamily","author");
-        map7.put("columnName","nickname");
-        map7.put("columnValue","hadoop");
-        listMap.add(map7);
-        insertMany(tableName,listMap);
+        List<Map<String, Object>> list2 = new ArrayList<Map<String, Object>>();
+        list2.add(insertValueFactory("001","Name","name","xingzheng"));
+        list2.add(insertValueFactory("002","Name","name","daniel"));
+        insertMany(tableName2,list2);
+
+        // 创建表(包含多个列簇)
+        // TableName tableName = TableName.valueOf("test");
+        // String[] columnFamilys = { "article", "author" };
+        // createTable(tableName, columnFamilys);
+
+        //添加数据
+        // List<Map<String,Object>> listMap=new ArrayList<Map<String, Object>>();
+        // Map<String,Object> map1=new HashMap<String,Object>();
+        // map1.put("rowKey","ce_shi1");
+        // map1.put("columnFamily","article");
+        // map1.put("columnName","title");
+        // map1.put("columnValue","Head First HBase");
+        // listMap.add(map1);
+        // Map<String,Object> map2=new HashMap<String,Object>();
+        // map2.put("rowKey","ce_shi1");
+        // map2.put("columnFamily","article");
+        // map2.put("columnName","content");
+        // map2.put("columnValue","HBase is the Hadoop database");
+        // listMap.add(map2);
+        // Map<String,Object> map3=new HashMap<String,Object>();
+        // map3.put("rowKey","ce_shi1");
+        // map3.put("columnFamily","article");
+        // map3.put("columnName","tag");
+        // map3.put("columnValue","Hadoop,HBase,NoSQL");
+        // listMap.add(map3);
+        // Map<String,Object> map4=new HashMap<String,Object>();
+        // map4.put("rowKey","ce_shi1");
+        // map4.put("columnFamily","author");
+        // map4.put("columnName","name");
+        // map4.put("columnValue","nicholas");
+        // listMap.add(map4);
+        // Map<String,Object> map5=new HashMap<String,Object>();
+        // map5.put("rowKey","ce_shi1");
+        // map5.put("columnFamily","author");
+        // map5.put("columnName","nickname");
+        // map5.put("columnValue","lee");
+        // listMap.add(map5);
+        // Map<String,Object> map6=new HashMap<String,Object>();
+        // map6.put("rowKey","ce_shi2");
+        // map6.put("columnFamily","author");
+        // map6.put("columnName","name");
+        // map6.put("columnValue","spark");
+        // listMap.add(map6);
+        // Map<String,Object> map7=new HashMap<String,Object>();
+        // map7.put("rowKey","ce_shi2");
+        // map7.put("columnFamily","author");
+        // map7.put("columnName","nickname");
+        // map7.put("columnValue","hadoop");
+        // listMap.add(map7);
+        // insertMany(tableName,listMap);
 
         //根据RowKey，列簇，列名修改值
-        String rowKey="ce_shi2";
-        String columnFamily="author";
-        String columnName="name";
-        String columnValue="hbase";
+        // String rowKey="ce_shi2";
+        // String columnFamily="author";
+        // String columnName="name";
+        // String columnValue="hbase";
 //        updateData(tableName,rowKey,columnFamily,columnName,columnValue);
 
 
-        String rowKey1="ce_shi1";
-        String columnFamily1="article";
-        String columnName1="name";
-        List<String> columnNames=new ArrayList<String>();
-        columnNames.add("content");
-        columnNames.add("title");
+        // String rowKey1="ce_shi1";
+        // String columnFamily1="article";
+        // String columnName1="name";
+        // List<String> columnNames=new ArrayList<String>();
+        // columnNames.add("content");
+        // columnNames.add("title");
         //删除某行某个列簇的某个列
 //        deleteData(tableName,rowKey1,columnFamily1,columnName1);
         //删除某行某个列簇
@@ -440,10 +489,10 @@ public class HBaseJavaApiDemo {
         //删除某行
 //        deleteData(tableName,rowKey1);
         //根据rowKey查询数据
-       getResult(tableName,"rowKey1");
+    //    getResult(tableName,"rowKey1");
 
         //全表扫描
-        scanTable(tableName);
+        // scanTable(tableName);
 
         //rowKey过滤器
 //        rowkeyFilter(tableName);
@@ -456,6 +505,10 @@ public class HBaseJavaApiDemo {
 
         //过滤器集合
 //        filterSet(tableName);
+    }
+
+    public static void main(String[] args) throws Exception {
+        insertCasesForStream();
     }
 
 }

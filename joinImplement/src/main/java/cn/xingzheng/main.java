@@ -24,7 +24,7 @@ public class main {
         if (commandLine.hasOption("f")) {
               function = commandLine.getOptionValue("f");
               if (function.compareTo("utils") == 0) {
-                    HBaseJavaApiDemo.main();
+                    HBaseJavaApiDemo.insertCasesForStream();;
               }else{
                   System.out.println("Arguments Error");
               }

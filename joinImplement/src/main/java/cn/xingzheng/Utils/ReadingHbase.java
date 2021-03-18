@@ -1,6 +1,7 @@
-package cn.xingzheng.HbaseOnFlink;
+package cn.xingzheng.Utils;
 
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
 import org.apache.hadoop.hbase.Cell;
@@ -14,41 +15,48 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.*;
 
-/**
- * @Author: Yang JianQiu
- * @Date: 2019/2/22 16:20
- *
- * 以HBase为数据源
- * 从HBase中获取数据，然后以流的形式发射
- *
- * 从HBase读取数据
- * 第一种：继承RichSourceFunction重写父类方法
- */
-public class HBaseReaderJava extends RichSourceFunction<Tuple2<String, String>> {
+public class ReadingHbase extends RichSourceFunction<Tuple2< String, String>>{
 
-    private static final Logger logger = LoggerFactory.getLogger(HBaseReaderJava.class);
+    private final Logger logger = LoggerFactory.getLogger(ReadingHbase.class);
     private Connection conn = null;
     private Table table = null;
     private Scan scan = null;
-    private static TableName tableName = TableName.valueOf("test");
-    private static final String cf1 = "cf1";
+    private String tableName = null;
+    private ArrayList<String> columnNames = null;
+    private String startRowkey = null;
+    private String endRowkey = null;
 
+    public ReadingHbase(String table , ArrayList<String> columnFamilys) {
+        tableName = table;
+        columnNames = columnFamilys;
+    }
+
+    public void setParameters(String table , ArrayList<String> columnFamilys) {
+        tableName = table;
+        columnNames = columnFamilys;
+    }
+    
     @Override
-    public void open(Configuration parameters) throws Exception {
+    public void open(Configuration configuration) throws Exception {
+        // configuration
         org.apache.hadoop.conf.Configuration config = HBaseConfiguration.create();
-
         config.set(HConstants.ZOOKEEPER_QUORUM, "127.0.0.1");
         config.set(HConstants.ZOOKEEPER_CLIENT_PORT, "2181");
         config.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 30000);
         config.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, 30000);
 
+        // 创建链接
         conn = ConnectionFactory.createConnection(config);
-        table = conn.getTable(tableName);
+        table = conn.getTable(TableName.valueOf(tableName));
         scan = new Scan();
-        scan.withStartRow(Bytes.toBytes("1001"));
-        scan.withStopRow(Bytes.toBytes("1004"));
-        scan.addFamily(Bytes.toBytes(cf1));
+        // scan.withStartRow(Bytes.toBytes("1001"));
+        // scan.withStopRow(Bytes.toBytes("1004"));
+        for (String columnName: columnNames) {
+            scan.addFamily(Bytes.toBytes(columnName));
+        }
+
     }
 
     @Override
@@ -59,6 +67,7 @@ public class HBaseReaderJava extends RichSourceFunction<Tuple2<String, String>> 
             Result result = iterator.next();
             String rowKey = Bytes.toString(result.getRow());
             StringBuffer sb = new StringBuffer();
+            
             for (Cell cell: result.listCells()){
                 String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
                 sb.append(value).append(",");
@@ -84,4 +93,6 @@ public class HBaseReaderJava extends RichSourceFunction<Tuple2<String, String>> 
         }
     }
 }
+
+
 
