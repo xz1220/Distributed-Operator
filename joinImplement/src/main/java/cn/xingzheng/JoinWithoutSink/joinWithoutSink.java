@@ -12,15 +12,11 @@ import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 
 import org.apache.flink.api.common.state.ListState;
-<<<<<<< HEAD
 import org.apache.flink.api.common.state.MapState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeHint;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
-=======
-import org.apache.flink.api.common.state.ListStateDescriptor;
->>>>>>> 02c6130083ef1441a326c5e9fe6cc4e22e8b954f
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.*;
