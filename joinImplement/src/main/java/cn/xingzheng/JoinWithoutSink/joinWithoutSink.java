@@ -69,13 +69,13 @@ public class joinWithoutSink {
         ReadingHbase source = new ReadingHbase("gradesV1", parameter);
         DataStream<Grades> dataStream = env.addSource(source);
 
-         dataStream.map(new MapFunction<Grades, Object>() {
-             @Override
-             public Object map(Grades value) throws Exception {
-                 System.out.println(value.studentID + " " + value.ChineseGrade);
-                 return null;
-             }
-         });
+        //  dataStream.map(new MapFunction<Grades, Object>() {
+        //      @Override
+        //      public Object map(Grades value) throws Exception {
+        //          System.out.println(value.studentID + " " + value.ChineseGrade);
+        //          return null;
+        //      }
+        //  });
 
         KeyedStream<Grades, String> keyedGrades = dataStream.keyBy((Grades grades) -> grades.EnglishGrade);
 
@@ -129,6 +129,7 @@ public class joinWithoutSink {
                                     if (!stored.isEmpty() && studentID == name.studentID) {
                                         for (Grades grades : stored) {
                                             out.collect(grades.toString()+" "+name.toString());
+                                            System.out.println(grades.toString()+" "+name.toString());
                                         }
                                         stored.clear();
                                     }
@@ -148,13 +149,13 @@ public class joinWithoutSink {
                         }
                 );
 
-        out.map(new RichMapFunction<String, Object>() {
-            @Override
-            public Object map(String value) throws Exception {
-                System.out.println(out);
-                return null;
-            }
-        });
+        // out.map(new MapFunction<String, Object>() {
+        //     @Override
+        //     public Object map(String value) throws Exception {
+        //         System.out.println(out);
+        //         return null;
+        //     }
+        // });
 
         env.execute();
     }
