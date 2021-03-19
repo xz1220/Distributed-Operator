@@ -88,7 +88,6 @@ public class joinWithoutSink {
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
         DataStream<Name> dataStream2 = env.addSource(source2);
 
-<<<<<<< HEAD
         MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
                 "RulesBroadcastState",
                 BasicTypeInfo.STRING_TYPE_INFO,
@@ -160,39 +159,6 @@ public class joinWithoutSink {
                 return null;
             }
         });
-=======
-       dataStream2.keyBy((Name name) -> name.studentName)
-            .map(new MapFunction<Name, Object>() {
-                @Override
-                public Object map(Name name) throws Exception {
-                    System.out.println(name.studentID + " " + name.studentName);
-                    return null;
-                }
-            });
-
-        dataStream2.connect(dataStream)
-                .flatMap(new RichCoFlatMapFunction<Name, Grades, Object>() {
-                    private ListState<Name> nameStates;
-                    private ListState<Grades> gradeStates;
-
-                    @Override
-                    public void open(Configuration configuration) {
-                        nameStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Name>("name states",Name.class));
-                        gradeStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Grades>("grades states"),Grades.class);
-                    }
-
-                    @Override
-                    public void flatMap1(Name name, Collector<Object> collector) throws Exception {
-
-                    }
-
-                    @Override
-                    public void flatMap2(Grades grades, Collector<Object> collector) throws Exception {
-
-                    }
-                })
-
->>>>>>> 02c6130083ef1441a326c5e9fe6cc4e22e8b954f
 
         env.execute();
     }
