@@ -22,7 +22,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
-import org.apache.hadoop.conf.Configuration;
+import org.apache.flink.configuration.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.TableName;
@@ -77,27 +77,27 @@ public class joinWithoutSink {
                 }
             });
 
-    //    dataStream2.connect(dataStream)
-    //            .flatMap(new RichCoFlatMapFunction<Name, Grades, Object>() {
-    //                private ListState<Name> nameStates;
-    //                private ListState<Grades> gradeStates;
+        dataStream2.connect(dataStream)
+                .flatMap(new RichCoFlatMapFunction<Name, Grades, Object>() {
+                    private ListState<Name> nameStates;
+                    private ListState<Grades> gradeStates;
 
-    //                @Override
-    //                public void open(Configuration configuration) {
-    //                    nameStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Name>("name states",Name.class));
+                    @Override
+                    public void open(Configuration configuration) {
+                        nameStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Name>("name states",Name.class));
+                        gradeStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Grades>("grades states"),Grades.class);
+                    }
 
-    //                }
+                    @Override
+                    public void flatMap1(Name name, Collector<Object> collector) throws Exception {
 
-    //                @Override
-    //                public void flatMap1(Name name, Collector<Object> collector) throws Exception {
-    //                    if
-    //                }
+                    }
 
-    //                @Override
-    //                public void flatMap2(Grades grades, Collector<Object> collector) throws Exception {
+                    @Override
+                    public void flatMap2(Grades grades, Collector<Object> collector) throws Exception {
 
-    //                }
-    //            })
+                    }
+                })
 
 
         env.execute();
