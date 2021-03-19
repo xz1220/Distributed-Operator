@@ -24,4 +24,8 @@ public class Grades implements Serializable {
         return studentID+ ","+ ChineseGrade+", " + EnglishGrade +", "+MathGrade;
     }
 
+    public String getStudentID() {
+        return this.studentID;
+    }
+
 }
