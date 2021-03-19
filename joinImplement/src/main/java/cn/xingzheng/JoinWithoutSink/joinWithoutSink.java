@@ -158,13 +158,13 @@ public class joinWithoutSink {
                         }
                 );
 
-        // out.map(new MapFunction<String, Object>() {
-        //     @Override
-        //     public Object map(String value) throws Exception {
-        //         System.out.println(out);
-        //         return null;
-        //     }
-        // });
+         out.map(new MapFunction<String, Object>() {
+             @Override
+             public Object map(String value) throws Exception {
+                 System.out.println(out);
+                 return null;
+             }
+         });
 
         env.execute();
     }
