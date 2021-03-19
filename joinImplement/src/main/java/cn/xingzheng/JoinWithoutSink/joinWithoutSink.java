@@ -87,76 +87,76 @@ public class joinWithoutSink {
                 return null;
             }
         });
-//
-//        ArrayList<String> parameter2 = new ArrayList<String>();
-//        parameter2.add("Name");
-//        ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
-//        DataStream<Name> dataStream2 = env.addSource(source2);
-//
-//        MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
-//                "RulesBroadcastState",
-//                BasicTypeInfo.STRING_TYPE_INFO,
-//                TypeInformation.of(new TypeHint<Name>() {}));
-//        BroadcastStream<Name> broadCastName = dataStream2.broadcast(ruleMapStateDescriptor);
-//
-//        DataStream<String> out = keyedGrades
-//                .connect(broadCastName)
-//                .process(
-//                        new KeyedBroadcastProcessFunction<String, Grades, Name, String>() {
-//                            private MapStateDescriptor<String,List<Grades>> mapStateDescriptor =
-//                                    new MapStateDescriptor<>(
-//                                            "grades",
-//                                            BasicTypeInfo.STRING_TYPE_INFO,
-//                                            new ListTypeInfo<>(Grades.class)
-//                                    );
-//                            private MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
-//                                    "RulesBroadcastState",
-//                                    BasicTypeInfo.STRING_TYPE_INFO,
-//                                    TypeInformation.of(new TypeHint<Name>() {}));
-//
-//                            @Override
-//                            public void processBroadcastElement(Name value,
-//                                                                Context ctx,
-//                                                                Collector<String> out) throws Exception {
-//                                ctx.getBroadcastState(ruleMapStateDescriptor).put(value.studentID, value);
-//                            }
-//
-//                            @Override
-//                            public void processElement(Grades value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
-//                                final MapState<String, List<Grades>> state = getRuntimeContext().getMapState(mapStateDescriptor);
-//                                String studentID = value.studentID;
-//
-//                                for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
-//                                    final String ruleName = entry.getKey();
-//                                    final Name name = entry.getValue();
-//
-//                                    List<Grades> stored = state.get(ruleName);
-//                                    if (stored == null) {
-//                                        stored = new ArrayList<>();
-//                                    }
-//
-//                                    if (!stored.isEmpty() && studentID == name.studentID) {
-//                                        for (Grades grades : stored) {
-//                                            out.collect(grades.toString()+" "+name.toString());
-//                                            System.out.println(grades.toString()+" "+name.toString());
-//                                        }
-//                                        stored.clear();
-//                                    }
-//
-//                                    if ( studentID != name.studentID) {
-//                                        stored.add(value);
-//                                    }
-//
-//                                    if ( stored.isEmpty() ) {
-//                                        state.remove(ruleName);
-//                                    }else {
-//                                        state.put(ruleName, stored);
-//                                    }
-//
-//                                }
-//                            }
-//                        }
-//                );
+
+        ArrayList<String> parameter2 = new ArrayList<String>();
+        parameter2.add("Name");
+        ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
+        DataStream<Name> dataStream2 = env.addSource(source2);
+
+        MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
+                "RulesBroadcastState",
+                BasicTypeInfo.STRING_TYPE_INFO,
+                TypeInformation.of(new TypeHint<Name>() {}));
+        BroadcastStream<Name> broadCastName = dataStream2.broadcast(ruleMapStateDescriptor);
+
+        DataStream<String> out = keyedGrades
+                .connect(broadCastName)
+                .process(
+                        new KeyedBroadcastProcessFunction<String, Grades, Name, String>() {
+                            private MapStateDescriptor<String,List<Grades>> mapStateDescriptor =
+                                    new MapStateDescriptor<>(
+                                            "grades",
+                                            BasicTypeInfo.STRING_TYPE_INFO,
+                                            new ListTypeInfo<>(Grades.class)
+                                    );
+                            private MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
+                                    "RulesBroadcastState",
+                                    BasicTypeInfo.STRING_TYPE_INFO,
+                                    TypeInformation.of(new TypeHint<Name>() {}));
+
+                            @Override
+                            public void processBroadcastElement(Name value,
+                                                                Context ctx,
+                                                                Collector<String> out) throws Exception {
+                                ctx.getBroadcastState(ruleMapStateDescriptor).put(value.studentID, value);
+                            }
+
+                            @Override
+                            public void processElement(Grades value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
+                                final MapState<String, List<Grades>> state = getRuntimeContext().getMapState(mapStateDescriptor);
+                                String studentID = value.studentID;
+
+                                for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
+                                    final String ruleName = entry.getKey();
+                                    final Name name = entry.getValue();
+
+                                    List<Grades> stored = state.get(ruleName);
+                                    if (stored == null) {
+                                        stored = new ArrayList<>();
+                                    }
+
+                                    if (!stored.isEmpty() && studentID == name.studentID) {
+                                        for (Grades grades : stored) {
+                                            out.collect(grades.toString()+" "+name.toString());
+                                            System.out.println(grades.toString()+" "+name.toString());
+                                        }
+                                        stored.clear();
+                                    }
+
+                                    if ( studentID != name.studentID) {
+                                        stored.add(value);
+                                    }
+
+                                    if ( stored.isEmpty() ) {
+                                        state.remove(ruleName);
+                                    }else {
+                                        state.put(ruleName, stored);
+                                    }
+
+                                }
+                            }
+                        }
+                );
 
         // out.map(new MapFunction<String, Object>() {
         //     @Override

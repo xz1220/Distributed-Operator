@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="842a1324-0c68-486d-b493-ad471f4dd0da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/Grades.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/Grades.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/JoinWithoutSink/joinWithoutSink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/JoinWithoutSink/joinWithoutSink.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -193,7 +192,7 @@
       <updated>1615599761498</updated>
       <workItem from="1616081043747" duration="305000" />
       <workItem from="1616081357880" duration="430000" />
-      <workItem from="1616116298139" duration="8838000" />
+      <workItem from="1616116298139" duration="8991000" />
     </task>
     <servers />
   </component>
