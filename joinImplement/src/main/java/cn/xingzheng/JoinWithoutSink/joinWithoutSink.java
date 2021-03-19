@@ -83,7 +83,7 @@ public class joinWithoutSink {
         keyedGrades.map(new MapFunction<Grades, Object>() {
             @Override
             public Object map(Grades grades) {
-                System.out.println(grades.studentID);
+                System.out.println("keyedGradesV1:  "+grades.studentID);
                 return null;
             }
         });
@@ -91,7 +91,7 @@ public class joinWithoutSink {
         keyedGrades.map(new MapFunction<Grades, Object>() {
             @Override
             public Object map(Grades grades) {
-                System.out.println(grades.studentID);
+                System.out.println("keyedGradesV2:  "+grades.studentID);
                 return null;
             }
         });
@@ -103,14 +103,14 @@ public class joinWithoutSink {
         dataStream2.map(new MapFunction<Name, Object>() {
             @Override
             public Object map(Name name) {
-                System.out.println(name.studentID);
+                System.out.println("dataStream2V1:  "+name.studentID);
                 return null;
             }
         });
         dataStream2.map(new MapFunction<Name, Object>() {
             @Override
             public Object map(Name name) {
-                System.out.println(name.studentID);
+                System.out.println("dataStream2V2:  "+name.studentID);
                 return null;
             }
         });
