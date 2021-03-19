@@ -68,7 +68,7 @@ public class joinWithoutSink {
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
         DataStream<Name> dataStream2 = env.addSource(source2);
 
-        dataStream2.keyBy((Name name) -> name.studentName)
+//        dataStream2.keyBy((Name name) -> name.studentName)
             // .map(new MapFunction<Name, Object>() {
             //     @Override
             //     public Object map(Name name) throws Exception {
@@ -76,23 +76,23 @@ public class joinWithoutSink {
             //         return null;
             //     }
             // });
-            .join(dataStream).where(new keySelector<Name, String>{
-                @Override
-                public String getKey(Name name) throws Exception {
-                    return name.studentName;
-                }
-            }).equalTo(new KeySelector<Name,String>{
-                @Override
-                public String getKey(Name name) throws Exception {
-                    return name.studentName;
-                }
-            }).window(EventTimeSessionWindows.withGap(Time.milliseconds(1)))
-            .apply(new JoinFunction<Name,Name,Name>(){
-                @Override
-                public Name join(Name name1, Name name2){
-                    return null;
-                }
-            });
+//            .join(dataStream).where(new keySelector<Name, String>{
+//                @Override
+//                public String getKey(Name name) throws Exception {
+//                    return name.studentName;
+//                }
+//            }).equalTo(new KeySelector<Name,String>{
+//                @Override
+//                public String getKey(Name name) throws Exception {
+//                    return name.studentName;
+//                }
+//            }).window(EventTimeSessionWindows.withGap(Time.milliseconds(1)))
+//            .apply(new JoinFunction<Name,Name,Name>(){
+//                @Override
+//                public Name join(Name name1, Name name2){
+//                    return null;
+//                }
+//            });
 
 
         // dataStream2.map(new MapFunction<Tuple2<String, String>, Object>() {
