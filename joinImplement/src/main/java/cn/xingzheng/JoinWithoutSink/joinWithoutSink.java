@@ -92,6 +92,20 @@ public class joinWithoutSink {
         parameter2.add("Name");
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
         DataStream<Name> dataStream2 = env.addSource(source2);
+        dataStream2.map(new MapFunction<Name, Object>() {
+            @Override
+            public Object map(Name name) {
+                System.out.println(name.studentID);
+                return null;
+            }
+        });
+        dataStream2.map(new MapFunction<Name, Object>() {
+            @Override
+            public Object map(Name name) {
+                System.out.println(name.studentID);
+                return null;
+            }
+        });
 
         MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
                 "RulesBroadcastState",
