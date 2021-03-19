@@ -30,7 +30,7 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
     private ArrayList<String> columnNames = null;
     private String startRowkey = null;
     private String endRowkey = null;
-    private ListState<Name> state;
+    // private ListState<Name> state;
 
     public ReadingHbase2(String table , ArrayList<String> columnFamilys) {
         tableName = table;
@@ -46,7 +46,7 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
     public void open(Configuration configuration) throws Exception {
         // configuration
         org.apache.hadoop.conf.Configuration config = HBaseConfiguration.create();
-        config.set(HConstants.ZOOKEEPER_QUORUM, "127.0.0.1");
+        config.set(HConstants.ZOOKEEPER_QUORUM, "172.27.0.7");
         config.set(HConstants.ZOOKEEPER_CLIENT_PORT, "2181");
         config.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 30000);
         config.setInt(HConstants.HBASE_CLIENT_SCANNER_TIMEOUT_PERIOD, 30000);
@@ -69,6 +69,8 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
         Iterator<Result> iterator = rs.iterator();
         while (iterator.hasNext()){
             Result result = iterator.next();
+            
+            // System.out.println("In the iterator!");
 
             String rowKey = Bytes.toString(result.getRow());
             StringBuffer sb = new StringBuffer();
@@ -80,6 +82,7 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
             Cell cell = cells.get(0);
             Name name = new Name(rowKey,Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()));
             
+            // System.out.println(name.toString());
             // for (Cell cell: result.listCells()){
             //     String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
             //     sb.append(value).append(",");
@@ -87,7 +90,7 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
             // String valueString = sb.replace(sb.length() - 1, sb.length(), "").toString();
             // Tuple2<String, String> tuple2 = new Tuple2<>();
             // tuple2.setFields(rowKey, valueString);
-            state.add(name);
+            // state.add(name);
             sourceContext.collect(name);
         }
     }

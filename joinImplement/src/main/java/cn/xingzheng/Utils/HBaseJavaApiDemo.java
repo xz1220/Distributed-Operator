@@ -386,33 +386,33 @@ public class HBaseJavaApiDemo {
         TableName tableName = TableName.valueOf("gradesV1");
 
         String[] columnFamilys = {"English", "Chinese", "Math"};
-        createTable(tableName, columnFamilys);
+        // createTable(tableName, columnFamilys);
 
-        // 添加数据
-        // List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        // list.add(insertValueFactory("001","English","english", "11"));
-        // list.add(insertValueFactory("001","Chinese","chinese", "22"));
-        // list.add(insertValueFactory("001","Math","math", "33"));
-        // list.add(insertValueFactory("002","English","english", "97"));
-        // list.add(insertValueFactory("002","Chinese","chinese", "98"));
-        // list.add(insertValueFactory("002","Math","math", "98"));
+        //添加数据
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        list.add(insertValueFactory("003","English","english", "11"));
+        list.add(insertValueFactory("003","Chinese","chinese", "22"));
+        list.add(insertValueFactory("003","Math","math", "33"));
+        list.add(insertValueFactory("004","English","english", "97"));
+        list.add(insertValueFactory("004","Chinese","chinese", "98"));
+        list.add(insertValueFactory("004","Math","math", "98"));
 
         // // 循环插入数据
         // for() {
 
         // }
 
-        // 更新到表中
-        // insertMany(tableName,list);
+        //更新到表中
+        insertMany(tableName,list);
 
         TableName tableName2 = TableName.valueOf("name");
         String[] columnFamilysForName = {"Name"};
-        createTable(tableName2, columnFamilysForName);
+        // createTable(tableName2, columnFamilysForName);
 
         //添加数据
         List<Map<String, Object>> list2 = new ArrayList<Map<String, Object>>();
-        list2.add(insertValueFactory("001","Name","name","xingzheng"));
-        list2.add(insertValueFactory("002","Name","name","daniel"));
+        list2.add(insertValueFactory("003","Name","name","kiven"));
+        list2.add(insertValueFactory("004","Name","name","lisa"));
         insertMany(tableName2,list2);
 
         // 创建表(包含多个列簇)
