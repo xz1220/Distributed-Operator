@@ -88,6 +88,14 @@ public class joinWithoutSink {
             }
         });
 
+        keyedGrades.map(new MapFunction<Grades, Object>() {
+            @Override
+            public Object map(Grades grades) {
+                System.out.println(grades.studentID);
+                return null;
+            }
+        });
+
         ArrayList<String> parameter2 = new ArrayList<String>();
         parameter2.add("Name");
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
@@ -99,13 +107,13 @@ public class joinWithoutSink {
                 return null;
             }
         });
-//        dataStream2.map(new MapFunction<Name, Object>() {
-//            @Override
-//            public Object map(Name name) {
-//                System.out.println(name.studentID);
-//                return null;
-//            }
-//        });
+        dataStream2.map(new MapFunction<Name, Object>() {
+            @Override
+            public Object map(Name name) {
+                System.out.println(name.studentID);
+                return null;
+            }
+        });
 
         MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
                 "RulesBroadcastState",
