@@ -10,6 +10,7 @@ import org.apache.flink.api.common.functions.JoinFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 
+import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.*;
@@ -17,7 +18,9 @@ import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
+import org.apache.flink.util.Collector;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HConstants;
@@ -43,28 +46,24 @@ public class joinWithoutSink {
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
 
-        // ReadingHbase source = new ReadingHbase("");
         ArrayList<String> parameter = new ArrayList<String>();
         parameter.add("English");
         parameter.add("Chinese");
         parameter.add("Math");
-        // source.setParameters("gradesV1", parameter);
         ReadingHbase source = new ReadingHbase("gradesV1", parameter);
-        DataStream<Tuple2<String, String>> dataStream = env.addSource(source);
+        DataStream<Grades> dataStream = env.addSource(source);
 
-    //     dataStream.map(new MapFunction<Tuple2<String, String>, Object>() {
-    //         @Override
-    //         public Object map(Tuple2<String, String> value) throws Exception {
-    //             System.out.println(value.f0 + " " + value.f1);
-    //             return null;
-    //         }
-    //     });
+         dataStream.map(new MapFunction<Grades, Object>() {
+             @Override
+             public Object map(Grades value) throws Exception {
+                 System.out.println(value.studentID + " " + value.ChineseGrade);
+                 return null;
+             }
+         });
 
 
-        // ReadingHbase source2 = new ReadingHbase();
         ArrayList<String> parameter2 = new ArrayList<String>();
         parameter2.add("Name");
-        // source.setParameters("name", parameter2);
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
         DataStream<Name> dataStream2 = env.addSource(source2);
 
@@ -76,44 +75,26 @@ public class joinWithoutSink {
                     return null;
                 }
             });
-//            .join(dataStream).where(new keySelector<Name, String>{
-//                @Override
-//                public String getKey(Name name) throws Exception {
-//                    return name.studentName;
-//                }
-//            }).equalTo(new KeySelector<Name,String>{
-//                @Override
-//                public String getKey(Name name) throws Exception {
-//                    return name.studentName;
-//                }
-//            }).window(EventTimeSessionWindows.withGap(Time.milliseconds(1)))
-//            .apply(new JoinFunction<Name,Name,Name>(){
-//                @Override
-//                public Name join(Name name1, Name name2){
-//                    return null;
-//                }
-//            });
 
+       dataStream2.connect(dataStream)
+               .flatMap(new RichCoFlatMapFunction<Name, Grades, Object>() {
+                   private ListState<Name> nameStates;
+                   private ListState<Grades> gradeStates;
 
-        // dataStream2.map(new MapFunction<Tuple2<String, String>, Object>() {
-        //     @Override
-        //     public Object map(Tuple2<String, String> value) throws Exception {
-        //         System.out.println(value.f0 + " " + value.f1);
-        //         return null;
-        //     }
-        // });
+                   @Override
+                   public void open()
 
-        // datatStream2.join(datatStream).where(new KeySelector<TupleEntry, String>{
-        //     @override
-        //     public String getKey(TupleEntry value) throws Exception {
-        //         return value.f0;
-        //     }
-        // }).equalTo(new KeySelector<TupleEntry, String>{
-        //     @override
-        //     public String getKey(TupleEntry value) throws Exception {
-        //         return value.f0;
-        //     }
-        // })..window(TumblingEventTimeWindows.of(Time.milliseconds(1000))).apply();
+                   @Override
+                   public void flatMap1(Name name, Collector<Object> collector) throws Exception {
+                       if
+                   }
+
+                   @Override
+                   public void flatMap2(Grades grades, Collector<Object> collector) throws Exception {
+
+                   }
+               })
+
 
         env.execute();
     }

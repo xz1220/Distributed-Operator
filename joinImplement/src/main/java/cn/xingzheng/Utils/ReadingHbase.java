@@ -1,5 +1,6 @@
 package cn.xingzheng.Utils;
 
+import cn.xingzheng.DataType.Grades;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.configuration.Configuration;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.*;
 
-public class ReadingHbase extends RichSourceFunction<Tuple2< String, String>>{
+public class ReadingHbase extends RichSourceFunction<Grades>{
 
     private final Logger logger = LoggerFactory.getLogger(ReadingHbase.class);
     private Connection conn = null;
@@ -60,22 +61,20 @@ public class ReadingHbase extends RichSourceFunction<Tuple2< String, String>>{
     }
 
     @Override
-    public void run(SourceContext<Tuple2<String, String>> sourceContext) throws Exception {
+    public void run(SourceContext<Grades> sourceContext) throws Exception {
         ResultScanner rs = table.getScanner(scan);
         Iterator<Result> iterator = rs.iterator();
         while (iterator.hasNext()){
             Result result = iterator.next();
             String rowKey = Bytes.toString(result.getRow());
-            StringBuffer sb = new StringBuffer();
+            ArrayList<String> values = new ArrayList<String>();
             
-            for (Cell cell: result.listCells()){
+            for (Cell cell: result.listCells()) {
                 String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
-                sb.append(value).append(",");
+                values.add(value);
             }
-            String valueString = sb.replace(sb.length() - 1, sb.length(), "").toString();
-            Tuple2<String, String> tuple2 = new Tuple2<>();
-            tuple2.setFields(rowKey, valueString);
-            sourceContext.collect(tuple2);
+            Grades grades = new Grades(rowKey, values.get(0), values.get(1), values.get(2));
+            sourceContext.collect(grades);
         }
     }
 
