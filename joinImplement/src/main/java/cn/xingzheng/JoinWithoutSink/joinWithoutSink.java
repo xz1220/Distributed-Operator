@@ -126,9 +126,13 @@ public class joinWithoutSink {
                                 final MapState<String, List<Grades>> state = getRuntimeContext().getMapState(mapStateDescriptor);
                                 String studentID = value.studentID;
 
+                                System.out.println("process Grades tuple:"+studentID);
+
                                 for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
                                     final String ruleName = entry.getKey();
                                     final Name name = entry.getValue();
+
+                                    System.out.println("process Name tuple:"+name.studentID);
 
                                     List<Grades> stored = state.get(ruleName);
                                     if (stored == null) {
