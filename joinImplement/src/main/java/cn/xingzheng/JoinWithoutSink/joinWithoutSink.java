@@ -12,11 +12,15 @@ import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 
 import org.apache.flink.api.common.state.ListState;
+<<<<<<< HEAD
 import org.apache.flink.api.common.state.MapState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeHint;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
+=======
+import org.apache.flink.api.common.state.ListStateDescriptor;
+>>>>>>> 02c6130083ef1441a326c5e9fe6cc4e22e8b954f
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.*;
@@ -31,7 +35,7 @@ import org.apache.flink.streaming.api.functions.co.KeyedBroadcastProcessFunction
 import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
-import org.apache.hadoop.conf.Configuration;
+import org.apache.flink.configuration.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.TableName;
@@ -69,13 +73,13 @@ public class joinWithoutSink {
         ReadingHbase source = new ReadingHbase("gradesV1", parameter);
         DataStream<Grades> dataStream = env.addSource(source);
 
-//         dataStream.map(new MapFunction<Grades, Object>() {
-//             @Override
-//             public Object map(Grades value) throws Exception {
-//                 System.out.println(value.studentID + " " + value.ChineseGrade);
-//                 return null;
-//             }
-//         });
+         dataStream.map(new MapFunction<Grades, Object>() {
+             @Override
+             public Object map(Grades value) throws Exception {
+                 System.out.println(value.studentID + " " + value.ChineseGrade);
+                 return null;
+             }
+         });
 
         KeyedStream<Grades, String> keyedGrades = dataStream.keyBy((Grades grades) -> grades.EnglishGrade);
 
@@ -84,6 +88,7 @@ public class joinWithoutSink {
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
         DataStream<Name> dataStream2 = env.addSource(source2);
 
+<<<<<<< HEAD
         MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
                 "RulesBroadcastState",
                 BasicTypeInfo.STRING_TYPE_INFO,
@@ -155,6 +160,39 @@ public class joinWithoutSink {
                 return null;
             }
         });
+=======
+       dataStream2.keyBy((Name name) -> name.studentName)
+            .map(new MapFunction<Name, Object>() {
+                @Override
+                public Object map(Name name) throws Exception {
+                    System.out.println(name.studentID + " " + name.studentName);
+                    return null;
+                }
+            });
+
+        dataStream2.connect(dataStream)
+                .flatMap(new RichCoFlatMapFunction<Name, Grades, Object>() {
+                    private ListState<Name> nameStates;
+                    private ListState<Grades> gradeStates;
+
+                    @Override
+                    public void open(Configuration configuration) {
+                        nameStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Name>("name states",Name.class));
+                        gradeStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Grades>("grades states"),Grades.class);
+                    }
+
+                    @Override
+                    public void flatMap1(Name name, Collector<Object> collector) throws Exception {
+
+                    }
+
+                    @Override
+                    public void flatMap2(Grades grades, Collector<Object> collector) throws Exception {
+
+                    }
+                })
+
+>>>>>>> 02c6130083ef1441a326c5e9fe6cc4e22e8b954f
 
         env.execute();
     }
