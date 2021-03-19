@@ -161,9 +161,9 @@ public class joinWithoutSink {
                                         stored.clear();
                                     }
 
-                                    if ( studentID != name.studentID) {
-                                        stored.add(value);
-                                    }
+//                                    if ( studentID != name.studentID) {
+//                                        stored.add(value);
+//                                    }
 
                                     if ( stored.isEmpty() ) {
                                         state.remove(ruleName);
