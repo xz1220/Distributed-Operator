@@ -99,13 +99,13 @@ public class joinWithoutSink {
                 return null;
             }
         });
-        dataStream2.map(new MapFunction<Name, Object>() {
-            @Override
-            public Object map(Name name) {
-                System.out.println(name.studentID);
-                return null;
-            }
-        });
+//        dataStream2.map(new MapFunction<Name, Object>() {
+//            @Override
+//            public Object map(Name name) {
+//                System.out.println(name.studentID);
+//                return null;
+//            }
+//        });
 
         MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
                 "RulesBroadcastState",
