@@ -11,6 +11,7 @@ import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 
 import org.apache.flink.api.common.state.ListState;
+import org.apache.flink.api.common.state.ListStateDescriptor;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.*;
@@ -21,7 +22,8 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
-import org.apache.hadoop.conf.Configuration;
+import org.apache.flink.configuration.Configuration;
+//import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.TableName;
@@ -35,6 +37,7 @@ import cn.xingzheng.DataType.*;
 import cn.xingzheng.Utils.*;
 import scala.annotation.meta.param;
 import scala.xml.PrettyPrinter.Para;
+import sun.awt.X11.XGraphicsExposeEvent;
 
 public class joinWithoutSink {
     
@@ -53,7 +56,8 @@ public class joinWithoutSink {
         ReadingHbase source = new ReadingHbase("gradesV1", parameter);
         DataStream<Grades> dataStream = env.addSource(source);
 
-         dataStream.map(new MapFunction<Grades, Object>() {
+         dataStream.keyBy((Grades grades) -> grades.studentID)
+                 .map(new MapFunction<Grades, Object>() {
              @Override
              public Object map(Grades value) throws Exception {
                  System.out.println(value.studentID + " " + value.ChineseGrade);
@@ -67,7 +71,7 @@ public class joinWithoutSink {
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
         DataStream<Name> dataStream2 = env.addSource(source2);
 
-       dataStream2.keyBy((Name name) -> name.studentName)
+       dataStream2.keyBy((Name name) -> name.studentID)
             .map(new MapFunction<Name, Object>() {
                 @Override
                 public Object map(Name name) throws Exception {
@@ -76,24 +80,27 @@ public class joinWithoutSink {
                 }
             });
 
-       dataStream2.connect(dataStream)
-               .flatMap(new RichCoFlatMapFunction<Name, Grades, Object>() {
-                   private ListState<Name> nameStates;
-                   private ListState<Grades> gradeStates;
-
-                   @Override
-                   public void open()
-
-                   @Override
-                   public void flatMap1(Name name, Collector<Object> collector) throws Exception {
-                       if
-                   }
-
-                   @Override
-                   public void flatMap2(Grades grades, Collector<Object> collector) throws Exception {
-
-                   }
-               })
+//       dataStream2.connect(dataStream)
+//               .flatMap(new RichCoFlatMapFunction<Name, Grades, Object>() {
+//                   private ListState<Name> nameStates;
+//                   private ListState<Grades> gradeStates;
+//
+//                   @Override
+//                   public void open(Configuration configuration) {
+//                       nameStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Name>("name states",Name.class));
+//                       gradeStates = getIterationRuntimeContext().getListState(new ListStateDescriptor<Grades>("grade states", Grades.class));
+//                   }
+//
+//                   @Override
+//                   public void flatMap1(Name name, Collector<Object> collector) throws Exception {
+//                       if
+//                   }
+//
+//                   @Override
+//                   public void flatMap2(Grades grades, Collector<Object> collector) throws Exception {
+//
+//                   }
+//               })
 
 
         env.execute();
