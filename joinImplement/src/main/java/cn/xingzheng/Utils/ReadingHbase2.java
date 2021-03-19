@@ -1,5 +1,6 @@
 package cn.xingzheng.Utils;
 
+import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.configuration.Configuration;
@@ -86,6 +87,7 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
             // String valueString = sb.replace(sb.length() - 1, sb.length(), "").toString();
             // Tuple2<String, String> tuple2 = new Tuple2<>();
             // tuple2.setFields(rowKey, valueString);
+            state.add(name);
             sourceContext.collect(name);
         }
     }
