@@ -4,6 +4,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
+import org.apache.flink.streaming.api.checkpoint.*;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HConstants;
@@ -28,6 +29,7 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
     private ArrayList<String> columnNames = null;
     private String startRowkey = null;
     private String endRowkey = null;
+    private ListState<Name> state;
 
     public ReadingHbase2(String table , ArrayList<String> columnFamilys) {
         tableName = table;
