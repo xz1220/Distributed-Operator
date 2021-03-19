@@ -68,14 +68,14 @@ public class joinWithoutSink {
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
         DataStream<Name> dataStream2 = env.addSource(source2);
 
-//        dataStream2.keyBy((Name name) -> name.studentName)
-            // .map(new MapFunction<Name, Object>() {
-            //     @Override
-            //     public Object map(Name name) throws Exception {
-            //         System.out.println(name.studentID + " " + name.studentName);
-            //         return null;
-            //     }
-            // });
+       dataStream2.keyBy((Name name) -> name.studentName)
+            .map(new MapFunction<Name, Object>() {
+                @Override
+                public Object map(Name name) throws Exception {
+                    System.out.println(name.studentID + " " + name.studentName);
+                    return null;
+                }
+            });
 //            .join(dataStream).where(new keySelector<Name, String>{
 //                @Override
 //                public String getKey(Name name) throws Exception {
