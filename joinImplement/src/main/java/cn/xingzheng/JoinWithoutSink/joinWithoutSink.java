@@ -56,12 +56,15 @@ import scala.xml.PrettyPrinter.Para;
 public class joinWithoutSink {
     
     public static void main(String[] args) throws Exception {
-        // try{
-        //     BroadCastJoin();
-        // }catch(Exception e){
-        //     e.printStackTrace();
-        // }
+        try {
+            // BroadCastJoin();
+            BroadCastWithFaker();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public static void BroadCastWithFaker() throws Exception {
         System.out.println("This is test!");
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -69,114 +72,110 @@ public class joinWithoutSink {
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
 
-        ArrayList<String> parameter = new ArrayList<String>();
-        parameter.add("English");
-        parameter.add("Chinese");
-        parameter.add("Math");
-        ReadingHbase source = new ReadingHbase("gradesV1", parameter);
-        DataStream<Grades> dataStream = env.addSource(source);
-        KeyedStream<Grades,String> keyedGrades = dataStream.keyBy(Grades::getStudentID);
+        DataStream<Name> fakeName = env.fromElements(
+            new Name("001","xingzheng1"),
+            new Name("002","xingzheng2"),
+            new Name("003","xingzheng3"),
+            new Name("004","xingzheng4"),
+            new Name("005","xingzheng5")
+        );
 
-
-        ArrayList<String> parameter2 = new ArrayList<String>();
-        parameter2.add("Name");
-        ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
-        DataStream<Name> dataStream2 = env.addSource(source2);
+        DataStream<Grades> fakeGrades = env.fromElements(
+            new Grades("001","99","98","97"),
+            new Grades("002","96","45","97"),
+            new Grades("003","97","98","97"),
+            new Grades("004","94","98","97"),
+            new Grades("005","23","23","97"),
+            new Grades("006","95","56","97")
+        );
 
         MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
-                "RulesBroadcastState",
-                BasicTypeInfo.STRING_TYPE_INFO,
-                TypeInformation.of(new TypeHint<Name>() {}));
-        BroadcastStream<Name> broadCastName = dataStream2.broadcast(ruleMapStateDescriptor);
-
-        DataStream<String> out = keyedGrades
-                .connect(broadCastName)
-                .process(
-                        new KeyedBroadcastProcessFunction<String, Grades, Name, String>() {
-                            private MapStateDescriptor<String,List<Grades>> mapStateDescriptor =
-                                    new MapStateDescriptor<>(
-                                            "grades",
-                                            BasicTypeInfo.STRING_TYPE_INFO,
-                                            new ListTypeInfo<>(Grades.class)
-                                    );
-                            private MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
-                                    "RulesBroadcastState",
-                                    BasicTypeInfo.STRING_TYPE_INFO,
-                                    TypeInformation.of(new TypeHint<Name>() {}));
+            "RulesBroadcastState",
+            BasicTypeInfo.STRING_TYPE_INFO,
+            TypeInformation.of(new TypeHint<Name>() {}));
+         BroadcastStream<Name> broadCastName = fakeName.broadcast(ruleMapStateDescriptor);
 
 
-                            @Override
-                            public void processBroadcastElement(Name value,
-                                                                Context ctx,
-                                                                Collector<String> out) throws Exception {
-                                // System.out.println("processBroadcastElement:  "+value.toString());
-                                ctx.getBroadcastState(ruleMapStateDescriptor).put(value.studentID, value);
+         KeyedStream<Grades,String> keyedGrades = fakeGrades.keyBy(Grades::getStudentID);
 
+         DataStream<String> out = keyedGrades
+         .connect(broadCastName)
+         .process(
+                 new KeyedBroadcastProcessFunction<String, Grades, Name, String>() {
+                     private MapStateDescriptor<String,List<Grades>> mapStateDescriptor =
+                             new MapStateDescriptor<>(
+                                     "grades",
+                                     BasicTypeInfo.STRING_TYPE_INFO,
+                                     new ListTypeInfo<>(Grades.class)
+                             );
+                     private MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
+                             "RulesBroadcastState",
+                             BasicTypeInfo.STRING_TYPE_INFO,
+                             TypeInformation.of(new TypeHint<Name>() {}));
+
+
+                     @Override
+                     public void processBroadcastElement(Name value,
+                                                         Context ctx,
+                                                         Collector<String> out) throws Exception {
+                         // System.out.println("processBroadcastElement:  "+value.toString());
+                         ctx.getBroadcastState(ruleMapStateDescriptor).put(value.studentID, value);
+
+                     }
+
+                     @Override
+                     public void processElement(Grades value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
+                         final MapState<String, List<Grades>> state = getRuntimeContext().getMapState(mapStateDescriptor);
+                         String studentID = value.studentID;
+
+                         System.out.println("process Grades tuple:"+studentID);
+
+                         Iterable<Map.Entry<String, Name>> entries = ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries();
+
+                         for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
+                             final String ruleName = entry.getKey();
+                             final Name name = entry.getValue();
+
+                            //  System.out.println("process Grades tuple:"+studentID + " process Name tuple:"+name.studentID);
+
+                             List<Grades> stored = state.get(ruleName);
+                             if (stored == null) {
+                                //  System.out.println("process Grades tuple:"+studentID +" " +"Store euqals Null");
+                                 stored = new ArrayList<>();
+                             }
+
+                            //  System.out.println("process Grades tuple:"+studentID +" " +"Length Of Stored:" + stored.size()+"   StudentID is : " + studentID+ "   Name.StudentID is :" + name.studentID);
+
+                             // if (!stored.isEmpty() && studentID.equals(name.studentID)) {
+                             if (studentID.equals(name.studentID)) {
+                                 for (Grades grades : stored) {
+                                     out.collect(grades.toString()+" "+name.toString());
+                                     System.out.println(grades.toString()+" "+name.toString());
+                                 }
+                                 stored.clear();
+                             }
+
+
+                            if ( !studentID.equals(name.studentID) ) {
+                             //    System.out.println("process Grades tuple:"+studentID +" " +"studentID is not equals to name.studentID");
+                                stored.add(value);
+                             //    System.out.println("process Grades tuple:"+studentID +" " +"After added, len of store is :" + stored.size());
+                            }else{
+                                // out.collect(value.toString()+" "+name.toString());
+                                System.out.println("process Grades tuple:"+studentID +" " +"Out: " + value.toString()+" "+name.toString());
                             }
 
-                            @Override
-                            public void processElement(Grades value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
-                                final MapState<String, List<Grades>> state = getRuntimeContext().getMapState(mapStateDescriptor);
-                                String studentID = value.studentID;
+                             if ( stored.isEmpty() ) {
+                                 state.remove(ruleName);
+                             }else {
+                                 state.put(ruleName, stored);
+                                //  System.out.println("process Grades tuple:"+studentID +" " +"put Into the State");
+                             }
 
-                                System.out.println("process Grades tuple:"+studentID);
-
-                                Iterable<Map.Entry<String, Name>> entries = ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries();
-                                
-                                // while (!entries.iterator().hasNext()) {
-                                //     System.out.println("process Grades tuple:"+studentID+"  No next: "+ studentID);
-                                //     // List<Grades> stored = state.get(studentID);
-                                //     // if (stored == null) {
-                                //     //     stored = new ArrayList<>();
-                                //     // }
-                                //     // stored.add(value);
-                                //     // state.put(studentID, stored);
-                                //     Thread.sleep(2000);
-                                // }
-
-                                for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
-                                    final String ruleName = entry.getKey();
-                                    final Name name = entry.getValue();
-
-                                    System.out.println("process Grades tuple:"+studentID + " process Name tuple:"+name.studentID);
-
-                                    List<Grades> stored = state.get(ruleName);
-                                    if (stored == null) {
-                                        System.out.println("process Grades tuple:"+studentID +" " +"Store euqals Null");
-                                        stored = new ArrayList<>();
-                                    }
-
-                                    System.out.println("process Grades tuple:"+studentID +" " +"Length Of Stored:" + stored.size()+"   StudentID is : " + studentID+ "   Name.StudentID is :" + name.studentID);
-
-                                    if (!stored.isEmpty() && studentID.equals(name.studentID)) {
-                                        for (Grades grades : stored) {
-                                            out.collect(grades.toString()+" "+name.toString());
-                                            System.out.println(grades.toString()+" "+name.toString());
-                                        }
-                                        stored.clear();
-                                    }
-
-
-                                   if ( !studentID.equals(name.studentID) ) {
-                                    //    System.out.println("process Grades tuple:"+studentID +" " +"studentID is not equals to name.studentID");
-                                       stored.add(value);
-                                    //    System.out.println("process Grades tuple:"+studentID +" " +"After added, len of store is :" + stored.size());
-                                   }else{
-                                       out.collect(value.toString()+" "+name.toString());
-                                       System.out.println("process Grades tuple:"+studentID +" " +"Out: " + value.toString()+" "+name.toString());
-                                   }
-
-                                    if ( stored.isEmpty() ) {
-                                        state.remove(ruleName);
-                                    }else {
-                                        state.put(ruleName, stored);
-                                        System.out.println("process Grades tuple:"+studentID +" " +"put Into the State");
-                                    }
-
-                                }
-                            }
-                        }
-                );
+                         }
+                     }
+                 }
+         );
 
         // out.map(new MapFunction<String, Object>() {
         //     @Override
@@ -187,7 +186,8 @@ public class joinWithoutSink {
         // });
 
         env.execute();
-       
+
+
     }
 
     public static void BroadCastJoin() throws Exception {
@@ -197,15 +197,6 @@ public class joinWithoutSink {
         env.enableCheckpointing(5000);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
-
-        ArrayList<String> parameter = new ArrayList<String>();
-        parameter.add("English");
-        parameter.add("Chinese");
-        parameter.add("Math");
-        ReadingHbase source = new ReadingHbase("gradesV1", parameter);
-        DataStream<Grades> dataStream = env.addSource(source);
-        KeyedStream<Grades,String> keyedGrades = dataStream.keyBy(Grades::getStudentID);
-
 
         ArrayList<String> parameter2 = new ArrayList<String>();
         parameter2.add("Name");
@@ -217,6 +208,15 @@ public class joinWithoutSink {
                 BasicTypeInfo.STRING_TYPE_INFO,
                 TypeInformation.of(new TypeHint<Name>() {}));
         BroadcastStream<Name> broadCastName = dataStream2.broadcast(ruleMapStateDescriptor);
+
+        ArrayList<String> parameter = new ArrayList<String>();
+        parameter.add("English");
+        parameter.add("Chinese");
+        parameter.add("Math");
+        ReadingHbase source = new ReadingHbase("gradesV1", parameter);
+        DataStream<Grades> dataStream = env.addSource(source);
+        KeyedStream<Grades,String> keyedGrades = dataStream.keyBy(Grades::getStudentID);
+
 
         DataStream<String> out = keyedGrades
                 .connect(broadCastName)
@@ -251,17 +251,6 @@ public class joinWithoutSink {
                                 System.out.println("process Grades tuple:"+studentID);
 
                                 Iterable<Map.Entry<String, Name>> entries = ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries();
-                                
-                                // while (!entries.iterator().hasNext()) {
-                                //     System.out.println("process Grades tuple:"+studentID+"  No next: "+ studentID);
-                                //     // List<Grades> stored = state.get(studentID);
-                                //     // if (stored == null) {
-                                //     //     stored = new ArrayList<>();
-                                //     // }
-                                //     // stored.add(value);
-                                //     // state.put(studentID, stored);
-                                //     Thread.sleep(2000);
-                                // }
 
                                 for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
                                     final String ruleName = entry.getKey();
@@ -277,7 +266,8 @@ public class joinWithoutSink {
 
                                     System.out.println("process Grades tuple:"+studentID +" " +"Length Of Stored:" + stored.size()+"   StudentID is : " + studentID+ "   Name.StudentID is :" + name.studentID);
 
-                                    if (!stored.isEmpty() && studentID.equals(name.studentID)) {
+                                    // if (!stored.isEmpty() && studentID.equals(name.studentID)) {
+                                    if (studentID.equals(name.studentID)) {
                                         for (Grades grades : stored) {
                                             out.collect(grades.toString()+" "+name.toString());
                                             System.out.println(grades.toString()+" "+name.toString());
@@ -290,10 +280,11 @@ public class joinWithoutSink {
                                     //    System.out.println("process Grades tuple:"+studentID +" " +"studentID is not equals to name.studentID");
                                        stored.add(value);
                                     //    System.out.println("process Grades tuple:"+studentID +" " +"After added, len of store is :" + stored.size());
-                                   }else{
-                                       out.collect(value.toString()+" "+name.toString());
-                                       System.out.println("process Grades tuple:"+studentID +" " +"Out: " + value.toString()+" "+name.toString());
                                    }
+                                //    else{
+                                //        out.collect(value.toString()+" "+name.toString());
+                                //        System.out.println("process Grades tuple:"+studentID +" " +"Out: " + value.toString()+" "+name.toString());
+                                //    }
 
                                     if ( stored.isEmpty() ) {
                                         state.remove(ruleName);
