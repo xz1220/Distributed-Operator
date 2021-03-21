@@ -6,4 +6,6 @@ docker/storage/base/asserts/
 
 # ignore the *.jar
 joinImplement/target/*
-joinImplement/.idea/*
+joinImplement/.idea
+joinImplement/out
+joinImplement/hbase
