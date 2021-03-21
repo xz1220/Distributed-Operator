@@ -392,6 +392,23 @@ public class HBaseOperator {
         insertMany(tableName,list);
     }
 
+    public static void insterOrder() throws Exception {
+        TableName tableName = TableName.valueOf("Order");
+
+        String[] columnFamilys = {"Order","UserID"};
+        createTable(tableName, columnFamilys);
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        for(long i = 0; i< 1<<40; i ++) {
+            String user = "xingzheng" + Long.toString(i);
+            String rowKey = Long.toString(i);
+            list.add(insertValueFactory(rowKey,"Order","order", user));
+        }
+
+        //更新到表中
+        insertMany(tableName,list);
+    }
+
     
 
 
