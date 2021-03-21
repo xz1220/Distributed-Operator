@@ -1,6 +1,6 @@
 package cn.xingzheng.Utils;
 
-import cn.xingzheng.DataType.Grades;
+import cn.xingzheng.DataType.GRADES;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.configuration.Configuration;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.*;
 
-public class ReadingHbase extends RichSourceFunction<Grades>{
+public class ReadingHbase extends RichSourceFunction<GRADES>{
 
     private final Logger logger = LoggerFactory.getLogger(ReadingHbase.class);
     private Connection conn = null;
@@ -54,14 +54,14 @@ public class ReadingHbase extends RichSourceFunction<Grades>{
         scan = new Scan();
         // scan.withStartRow(Bytes.toBytes("1001"));
         // scan.withStopRow(Bytes.toBytes("1004"));
-        for (String columnName: columnNames) {
-            scan.addFamily(Bytes.toBytes(columnName));
-        }
+        // for (String columnName: columnNames) {
+        //     scan.addFamily(Bytes.toBytes(columnName));
+        // }
 
     }
 
     @Override
-    public void run(SourceContext<Grades> sourceContext) throws Exception {
+    public void run(SourceContext<GRADES> sourceContext) throws Exception {
         ResultScanner rs = table.getScanner(scan);
         Iterator<Result> iterator = rs.iterator();
         while (iterator.hasNext()){
@@ -73,7 +73,7 @@ public class ReadingHbase extends RichSourceFunction<Grades>{
                 String value = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
                 values.add(value);
             }
-            Grades grades = new Grades(rowKey, values.get(0), values.get(1), values.get(2));
+            GRADES grades = new GRADES(rowKey, values.get(0), values.get(1), values.get(2));
             sourceContext.collect(grades);
         }
     }

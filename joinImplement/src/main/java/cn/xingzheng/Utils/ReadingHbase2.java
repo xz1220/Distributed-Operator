@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.*;
 import cn.xingzheng.DataType.*;
 
-public class ReadingHbase2 extends RichSourceFunction<Name>{
+public class ReadingHbase2 extends RichSourceFunction<NAME>{
 
     private final Logger logger = LoggerFactory.getLogger(ReadingHbase.class);
     private Connection conn = null;
@@ -64,7 +64,7 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
     }
 
     @Override
-    public void run(SourceContext<Name> sourceContext) throws Exception {
+    public void run(SourceContext<NAME> sourceContext) throws Exception {
         ResultScanner rs = table.getScanner(scan);
         Iterator<Result> iterator = rs.iterator();
         while (iterator.hasNext()){
@@ -80,7 +80,7 @@ public class ReadingHbase2 extends RichSourceFunction<Name>{
                 System.out.println("Rowkey Is much more than one! Rowkey:" + rowKey);
             } 
             Cell cell = cells.get(0);
-            Name name = new Name(rowKey,Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()));
+            NAME name = new NAME(rowKey,Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()));
             
             // System.out.println(name.toString());
             // for (Cell cell: result.listCells()){

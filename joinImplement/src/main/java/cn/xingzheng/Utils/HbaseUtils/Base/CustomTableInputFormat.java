@@ -1,4 +1,4 @@
-package cn.xingzheng.HbaseOnFlink.flink_hbase;
+package cn.xingzheng.Utils.HbaseUtils.Base;
 
 import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.configuration.Configuration;
@@ -7,12 +7,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 
-/**
- * @Author: Yang JianQiu
- * @Date: 2019/3/19 11:15
- * 由于flink-hbase_2.12_1.7.2 jar包所引用的是hbase1.4.3版本，而现在用到的是hbase2.1.2，版本不匹配
- * 故需要重写flink-hbase_2.12_1.7.2里面的TableInputFormat
- */
+
 public abstract class CustomTableInputFormat<T extends Tuple> extends CustomAbstractTableInputFormat<T> {
 
     private static final long serialVersionUID = 1L;

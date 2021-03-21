@@ -6,7 +6,7 @@ import org.apache.commons.cli.Options;
 import java.util.List;
 import java.util.*;
 import cn.xingzheng.DataType.*;
-import cn.xingzheng.Utils.HBaseJavaApiDemo;
+import cn.xingzheng.Utils.HbaseUtils.Base.HBaseOperator;
 
 
 public class main {
@@ -27,7 +27,7 @@ public class main {
         if (commandLine.hasOption("f")) {
               function = commandLine.getOptionValue("f");
               if (function.compareTo("utils") == 0) {
-                    HBaseJavaApiDemo.insertCasesForStream();;
+                    HBaseOperator.insertCasesForStream();;
               }else{
                   System.out.println("Arguments Error");
               }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Names extends Tuple {
 
-    public ArrayList<Name> names ;
+    public ArrayList<NAME> names ;
 
     public Names() {
         names = new ArrayList<>();
@@ -22,10 +22,10 @@ public class Names extends Tuple {
      */
     @Override
     public <Name> void setField(Name value, int pos) {
-        names.set(pos, (cn.xingzheng.DataType.Name) value);
+        names.set(pos, (cn.xingzheng.DataType.NAME) value);
     }
 
-    public Names(ArrayList<Name> names) {
+    public Names(ArrayList<NAME> names) {
         this.names = names;
     }
 
@@ -38,7 +38,7 @@ public class Names extends Tuple {
      * @throws IndexOutOfBoundsException Thrown, if the position is negative, or equal to, or larger than the number of fields.
      */
     @Override
-    public Name getField(int pos) {
+    public NAME getField(int pos) {
         return names.get(pos);
     }
 

@@ -1,4 +1,4 @@
-package cn.xingzheng.HbaseOnFlink.flink_hbase;
+package cn.xingzheng.Utils.HbaseUtils.Base;
 
 import org.apache.flink.addons.hbase.AbstractTableInputFormat;
 import org.apache.flink.api.common.io.LocatableInputSplitAssigner;
@@ -19,14 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Author: Yang JianQiu
- * @Date: 2019/3/19 11:16
- *
- * 由于flink-hbase_2.12_1.7.2 jar包所引用的是hbase1.4.3版本，而现在用到的是hbase2.1.2，版本不匹配
- * 故需要重写flink-hbase_2.12_1.7.2里面的AbstractTableInputFormat，主要原因是AbstractTableInputFormat里面调用的是hbase1.4.3版本的api，
- * 而新版本hbase2.1.2已经去掉某些api
- */
 public abstract class CustomAbstractTableInputFormat<T> extends RichInputFormat<T, CustomTableInputSplit> {
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractTableInputFormat.class);
 

@@ -1,4 +1,4 @@
-package cn.xingzheng.Utils;
+package cn.xingzheng.Utils.HbaseUtils.Base;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HBaseJavaApiDemo {
+public class HBaseOperator {
 
     /**
      * 申明静态配置

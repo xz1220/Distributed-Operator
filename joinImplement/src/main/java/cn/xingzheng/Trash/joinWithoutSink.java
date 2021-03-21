@@ -32,8 +32,8 @@ public class joinWithoutSink {
     
     public static void main(String[] args) throws Exception {
         try {
-            // BroadCastJoin();
-            Test();
+            BroadCastJoin();
+            // Test();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,10 +47,10 @@ public class joinWithoutSink {
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
 
-        DataStream<Name> fakeName = env.fromElements(
-            new Name("001","xingzheng1"),
-            new Name("002","xingzheng2"),
-            new Name("003","xingzheng3")
+        DataStream<NAME> fakeName = env.fromElements(
+            new NAME("001","xingzheng1"),
+            new NAME("002","xingzheng2"),
+            new NAME("003","xingzheng3")
             // new Name("004","xingzheng4"),
             // new Name("005","xingzheng5"),
                 // new Name("006","xingzheng6"),
@@ -62,66 +62,66 @@ public class joinWithoutSink {
 
         );
 
-        DataStream<Grades> fakeGrades = env.fromElements(
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
-new Grades("001","99","98","97"),
+        DataStream<GRADES> fakeGrades = env.fromElements(
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
+new GRADES("001","99","98","97"),
 
-new Grades("002","96","45","97"),
-    new Grades("003","97","98","97"),
-    new Grades("004","94","98","97"),
-    new Grades("005","23","23","97"),
-    new Grades("006","95","56","97"),
-        new Grades("007","95","56","97"),
-new Grades("008","95","56","97"),
-new Grades("009","95","56","97"),
-new Grades("010","95","56","97"),
-new Grades("011","95","56","97"),
-new Grades("012","95","56","97")
+new GRADES("002","96","45","97"),
+    new GRADES("003","97","98","97"),
+    new GRADES("004","94","98","97"),
+    new GRADES("005","23","23","97"),
+    new GRADES("006","95","56","97"),
+        new GRADES("007","95","56","97"),
+new GRADES("008","95","56","97"),
+new GRADES("009","95","56","97"),
+new GRADES("010","95","56","97"),
+new GRADES("011","95","56","97"),
+new GRADES("012","95","56","97")
         );
 
-        MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
+        MapStateDescriptor<String, NAME> ruleMapStateDescriptor = new MapStateDescriptor<>(
             "RulesBroadcastState",
             BasicTypeInfo.STRING_TYPE_INFO,
-            TypeInformation.of(new TypeHint<Name>() {}));
-         BroadcastStream<Name> broadCastName = fakeName.broadcast(ruleMapStateDescriptor);
+            TypeInformation.of(new TypeHint<NAME>() {}));
+         BroadcastStream<NAME> broadCastName = fakeName.broadcast(ruleMapStateDescriptor);
 
 
-         KeyedStream<Grades,String> keyedGrades = fakeGrades.keyBy(Grades::getStudentID);
+         KeyedStream<GRADES,String> keyedGrades = fakeGrades.keyBy(GRADES::getStudentID);
 
          DataStream<String> out = keyedGrades
          .connect(broadCastName)
          .process(
-                 new KeyedBroadcastProcessFunction<String, Grades, Name, String>() {
-                     private MapStateDescriptor<String,List<Grades>> mapStateDescriptor =
+                 new KeyedBroadcastProcessFunction<String, GRADES, NAME, String>() {
+                     private MapStateDescriptor<String,List<GRADES>> mapStateDescriptor =
                              new MapStateDescriptor<>(
                                      "grades",
                                      BasicTypeInfo.STRING_TYPE_INFO,
-                                     new ListTypeInfo<>(Grades.class)
+                                     new ListTypeInfo<>(GRADES.class)
                              );
-                     private MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
+                     private MapStateDescriptor<String, NAME> ruleMapStateDescriptor = new MapStateDescriptor<>(
                              "RulesBroadcastState",
                              BasicTypeInfo.STRING_TYPE_INFO,
-                             TypeInformation.of(new TypeHint<Name>() {}));
+                             TypeInformation.of(new TypeHint<NAME>() {}));
                     
-                    ListState<Grades> unprocessedGrades;
+                    ListState<GRADES> unprocessedGrades;
 
                     @Override
                     public void open(Configuration configuration) {
-                        unprocessedGrades = getRuntimeContext().getListState(new ListStateDescriptor<Grades>("unprocessed", Grades.class));
+                        unprocessedGrades = getRuntimeContext().getListState(new ListStateDescriptor<GRADES>("unprocessed", GRADES.class));
                     }
 
 
                      @Override
-                     public void processBroadcastElement(Name value,
+                     public void processBroadcastElement(NAME value,
                                                          Context ctx,
                                                          Collector<String> out) throws Exception {
 //
@@ -132,14 +132,14 @@ new Grades("012","95","56","97")
                      }
 
                      @Override
-                     public void processElement(Grades value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
-                         MapState<String, List<Grades>> state = getRuntimeContext().getMapState(mapStateDescriptor);
+                     public void processElement(GRADES value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
+                         MapState<String, List<GRADES>> state = getRuntimeContext().getMapState(mapStateDescriptor);
                          String studentID = value.studentID;
 
                          System.out.println("process Grades tuple:"+studentID);
 
                         //   Iterable<Map.Entry<String, Name>> entries = ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries();
-                         Name tests = ctx.getBroadcastState(ruleMapStateDescriptor).get(studentID);
+                         NAME tests = ctx.getBroadcastState(ruleMapStateDescriptor).get(studentID);
 
                          if (!ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries().iterator().hasNext()) {
                              System.out.println("process Grades tuple:"+studentID +" " +"broadCast is unready");
@@ -150,12 +150,12 @@ new Grades("012","95","56","97")
                              out.collect("match success! :"+tests.toString()+" "+value.toString());
                          }
 
-                         for (Grades grades : unprocessedGrades.get()) {
+                         for (GRADES grades : unprocessedGrades.get()) {
                             System.out.println("process Grades tuple:"+studentID +" " +"iterotar: "+grades.toString());
 
-                             for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
+                             for (Map.Entry<String, NAME> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
                                 final String ruleName = entry.getKey();
-                                final Name name = entry.getValue();
+                                final NAME name = entry.getValue();
 
                                 System.out.println("In for");
                                 if ( grades.studentID.equals(name.studentID) ) {
@@ -203,102 +203,104 @@ new Grades("012","95","56","97")
         ArrayList<String> parameter2 = new ArrayList<String>();
         parameter2.add("Name");
         ReadingHbase2 source2 = new ReadingHbase2("name", parameter2);
-        DataStream<Name> dataStream2 = env.addSource(source2);
+        DataStream<NAME> dataStream2 = env.addSource(source2);
 
-        MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
+        MapStateDescriptor<String, NAME> ruleMapStateDescriptor = new MapStateDescriptor<>(
                 "RulesBroadcastState",
                 BasicTypeInfo.STRING_TYPE_INFO,
-                TypeInformation.of(new TypeHint<Name>() {}));
-        BroadcastStream<Name> broadCastName = dataStream2.broadcast(ruleMapStateDescriptor);
+                TypeInformation.of(new TypeHint<NAME>() {}));
+        BroadcastStream<NAME> broadCastName = dataStream2.broadcast(ruleMapStateDescriptor);
 
         ArrayList<String> parameter = new ArrayList<String>();
         parameter.add("English");
         parameter.add("Chinese");
         parameter.add("Math");
         ReadingHbase source = new ReadingHbase("gradesV1", parameter);
-        DataStream<Grades> dataStream = env.addSource(source);
-        KeyedStream<Grades,String> keyedGrades = dataStream.keyBy(Grades::getStudentID);
+        DataStream<GRADES> dataStream = env.addSource(source);
+        KeyedStream<GRADES,String> keyedGrades = dataStream.keyBy(GRADES::getStudentID);
+        keyedGrades.print();
+        // dataStream.print();
 
 
-        DataStream<String> out = keyedGrades
-                .connect(broadCastName)
-                .process(
-                        new KeyedBroadcastProcessFunction<String, Grades, Name, String>() {
-                            private MapStateDescriptor<String,List<Grades>> mapStateDescriptor =
-                                    new MapStateDescriptor<>(
-                                            "grades",
-                                            BasicTypeInfo.STRING_TYPE_INFO,
-                                            new ListTypeInfo<>(Grades.class)
-                                    );
-                            private MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
-                                    "RulesBroadcastState",
-                                    BasicTypeInfo.STRING_TYPE_INFO,
-                                    TypeInformation.of(new TypeHint<Name>() {}));
+        // DataStream<String> out = keyedGrades
+        //         .connect(broadCastName)
+        //         .process(
+        //                 new KeyedBroadcastProcessFunction<String, Grades, Name, String>() {
+        //                     private MapStateDescriptor<String,List<Grades>> mapStateDescriptor =
+        //                             new MapStateDescriptor<>(
+        //                                     "grades",
+        //                                     BasicTypeInfo.STRING_TYPE_INFO,
+        //                                     new ListTypeInfo<>(Grades.class)
+        //                             );
+        //                     private MapStateDescriptor<String, Name> ruleMapStateDescriptor = new MapStateDescriptor<>(
+        //                             "RulesBroadcastState",
+        //                             BasicTypeInfo.STRING_TYPE_INFO,
+        //                             TypeInformation.of(new TypeHint<Name>() {}));
 
 
-                            @Override
-                            public void processBroadcastElement(Name value,
-                                                                Context ctx,
-                                                                Collector<String> out) throws Exception {
-                                // System.out.println("processBroadcastElement:  "+value.toString());
-                                ctx.getBroadcastState(ruleMapStateDescriptor).put(value.studentID, value);
+        //                     @Override
+        //                     public void processBroadcastElement(Name value,
+        //                                                         Context ctx,
+        //                                                         Collector<String> out) throws Exception {
+        //                         // System.out.println("processBroadcastElement:  "+value.toString());
+        //                         ctx.getBroadcastState(ruleMapStateDescriptor).put(value.studentID, value);
 
-                            }
+        //                     }
 
-                            @Override
-                            public void processElement(Grades value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
-                                final MapState<String, List<Grades>> state = getRuntimeContext().getMapState(mapStateDescriptor);
-                                String studentID = value.studentID;
+        //                     @Override
+        //                     public void processElement(Grades value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
+        //                         final MapState<String, List<Grades>> state = getRuntimeContext().getMapState(mapStateDescriptor);
+        //                         String studentID = value.studentID;
 
-                                System.out.println("process Grades tuple:"+studentID);
+        //                         System.out.println("process Grades tuple:"+studentID);
 
-                                Iterable<Map.Entry<String, Name>> entries = ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries();
+        //                         Iterable<Map.Entry<String, Name>> entries = ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries();
 
-                                for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
-                                    final String ruleName = entry.getKey();
-                                    final Name name = entry.getValue();
+        //                         for (Map.Entry<String, Name> entry: ctx.getBroadcastState(ruleMapStateDescriptor).immutableEntries()){
+        //                             final String ruleName = entry.getKey();
+        //                             final Name name = entry.getValue();
 
-                                    System.out.println("process Grades tuple:"+studentID + " process Name tuple:"+name.studentID);
+        //                             System.out.println("process Grades tuple:"+studentID + " process Name tuple:"+name.studentID);
 
-                                    List<Grades> stored = state.get(ruleName);
-                                    if (stored == null) {
-                                        System.out.println("process Grades tuple:"+studentID +" " +"Store euqals Null");
-                                        stored = new ArrayList<>();
-                                    }
+        //                             List<Grades> stored = state.get(ruleName);
+        //                             if (stored == null) {
+        //                                 System.out.println("process Grades tuple:"+studentID +" " +"Store euqals Null");
+        //                                 stored = new ArrayList<>();
+        //                             }
 
-                                    System.out.println("process Grades tuple:"+studentID +" " +"Length Of Stored:" + stored.size()+"   StudentID is : " + studentID+ "   Name.StudentID is :" + name.studentID);
+        //                             System.out.println("process Grades tuple:"+studentID +" " +"Length Of Stored:" + stored.size()+"   StudentID is : " + studentID+ "   Name.StudentID is :" + name.studentID);
 
-                                    // if (!stored.isEmpty() && studentID.equals(name.studentID)) {
-                                    if (studentID.equals(name.studentID)) {
-                                        for (Grades grades : stored) {
-                                            out.collect(grades.toString()+" "+name.toString());
-                                            System.out.println(grades.toString()+" "+name.toString());
-                                        }
-                                        stored.clear();
-                                    }
+        //                             // if (!stored.isEmpty() && studentID.equals(name.studentID)) {
+        //                             if (studentID.equals(name.studentID)) {
+        //                                 for (Grades grades : stored) {
+        //                                     out.collect(grades.toString()+" "+name.toString());
+        //                                     System.out.println(grades.toString()+" "+name.toString());
+        //                                 }
+        //                                 stored.clear();
+        //                             }
 
 
-                                   if ( !studentID.equals(name.studentID) ) {
-                                    //    System.out.println("process Grades tuple:"+studentID +" " +"studentID is not equals to name.studentID");
-                                       stored.add(value);
-                                    //    System.out.println("process Grades tuple:"+studentID +" " +"After added, len of store is :" + stored.size());
-                                   }
-                                //    else{
-                                //        out.collect(value.toString()+" "+name.toString());
-                                //        System.out.println("process Grades tuple:"+studentID +" " +"Out: " + value.toString()+" "+name.toString());
-                                //    }
+        //                            if ( !studentID.equals(name.studentID) ) {
+        //                             //    System.out.println("process Grades tuple:"+studentID +" " +"studentID is not equals to name.studentID");
+        //                                stored.add(value);
+        //                             //    System.out.println("process Grades tuple:"+studentID +" " +"After added, len of store is :" + stored.size());
+        //                            }
+        //                         //    else{
+        //                         //        out.collect(value.toString()+" "+name.toString());
+        //                         //        System.out.println("process Grades tuple:"+studentID +" " +"Out: " + value.toString()+" "+name.toString());
+        //                         //    }
 
-                                    if ( stored.isEmpty() ) {
-                                        state.remove(ruleName);
-                                    }else {
-                                        state.put(ruleName, stored);
-                                        System.out.println("process Grades tuple:"+studentID +" " +"put Into the State");
-                                    }
+        //                             if ( stored.isEmpty() ) {
+        //                                 state.remove(ruleName);
+        //                             }else {
+        //                                 state.put(ruleName, stored);
+        //                                 System.out.println("process Grades tuple:"+studentID +" " +"put Into the State");
+        //                             }
 
-                                }
-                            }
-                        }
-                );
+        //                         }
+        //                     }
+        //                 }
+        //         );
 
         // out.map(new MapFunction<String, Object>() {
         //     @Override
@@ -315,38 +317,38 @@ new Grades("012","95","56","97")
         // Get the run-time
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
-        DataSet<Name> names = env.fromElements(
-            new Name("001","xingzheng1"),
-            new Name("002","xingzheng2"),
-            new Name("003","xingzheng3")
+        DataSet<NAME> names = env.fromElements(
+            new NAME("001","xingzheng1"),
+            new NAME("002","xingzheng2"),
+            new NAME("003","xingzheng3")
         );
 
-        DataSet<Grades> grades = env.fromElements(
-            new Grades("001","99","98","97"),
-            new Grades("002","96","45","97"),
-            new Grades("003","97","98","97"),
-            new Grades("004","94","98","97"),
-            new Grades("005","23","23","97"),
-            new Grades("006","95","56","97"),
-            new Grades("007","95","56","97"),
-            new Grades("008","95","56","97"),
-            new Grades("009","95","56","97"),
-            new Grades("010","95","56","97"),
-            new Grades("011","95","56","97"),
-            new Grades("012","95","56","97")
+        DataSet<GRADES> grades = env.fromElements(
+            new GRADES("001","99","98","97"),
+            new GRADES("002","96","45","97"),
+            new GRADES("003","97","98","97"),
+            new GRADES("004","94","98","97"),
+            new GRADES("005","23","23","97"),
+            new GRADES("006","95","56","97"),
+            new GRADES("007","95","56","97"),
+            new GRADES("008","95","56","97"),
+            new GRADES("009","95","56","97"),
+            new GRADES("010","95","56","97"),
+            new GRADES("011","95","56","97"),
+            new GRADES("012","95","56","97")
         );
 
-        grades.map(new RichMapFunction<Grades,String>(){
+        grades.map(new RichMapFunction<GRADES,String>(){
             @Override
             public void open(Configuration parameters) throws Exception {
                 // 3. Access the broadcast DataSet as a Collection
-                Collection<Name> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetName");
+                Collection<NAME> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetName");
             }
 
             @Override
-            public String map(Grades grades) throws Exception {
-                Collection<Name> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetName");
-                for (Name name: broadcastSet) {
+            public String map(GRADES grades) throws Exception {
+                Collection<NAME> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetName");
+                for (NAME name: broadcastSet) {
                     System.out.println(name.toString());
                 }
                 return null;

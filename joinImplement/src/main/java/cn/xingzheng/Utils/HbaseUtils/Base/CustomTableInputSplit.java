@@ -1,11 +1,7 @@
-package cn.xingzheng.HbaseOnFlink.flink_hbase;
+package cn.xingzheng.Utils.HbaseUtils.Base;
 
 import org.apache.flink.core.io.LocatableInputSplit;
 
-/**
- * @Author: Yang JianQiu
- * @Date: 2019/3/19 11:50
- */
 public class CustomTableInputSplit extends LocatableInputSplit {
     private static final long serialVersionUID = 1L;
 

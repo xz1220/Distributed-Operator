@@ -1,4 +1,4 @@
-package cn.xingzheng.Utils.HbaseUtils;
+package cn.xingzheng.Utils.HbaseUtils.Base;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -15,5 +15,4 @@ public class HbaseBaseUtil {
         return config;
     }
    
-
 }
