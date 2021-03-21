@@ -2,20 +2,27 @@ package cn.xingzheng.Utils.HbaseUtils;
 
 import cn.xingzheng.DataType.Name;
 import cn.xingzheng.DataType.Names;
-import cn.xingzheng.HbaseOnFlink.flink_hbase.CustomTableInputFormat;
 import org.apache.flink.api.java.tuple.Tuple;
+import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.configuration.Configuration;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 
-public class HbaseInputFormate extends CustomTableInputFormat<Names> {
+public class HbaseInputFormate extends ComposableInputFormat<Tuple1<Name>> {
 
     @Override
     public void configure(Configuration parameters) {
-        table = createTable();
+
+        // org.apache.hadoop.conf.Configuration config = HbaseBaseUtil.getConfiguration();
+        // Connection connection = ConnectionFactory.createConnection(config);
+        // TableName tableName = new TableName.valueOf("");
+
+        HTable table = createTable();
         if (table != null) {
-            scan = getScanner();
+            Scan scan = getScanner();
         }
     }
 

@@ -117,12 +117,12 @@
             <artifactId>flink-clients_2.12</artifactId>
             <version>1.10.2</version>
         </dependency>
-        <!-- kafka1.0.0以上
+        <!-- kafka1.0.0以上 -->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka_2.12</artifactId>
             <version>1.10.2</version>
-        </dependency> -->
+        </dependency>
         <dependency>
             <groupId>com.thoughtworks.paranamer</groupId>
             <artifactId>paranamer</artifactId>
