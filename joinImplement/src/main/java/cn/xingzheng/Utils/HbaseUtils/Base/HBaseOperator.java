@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.lang.*;
 
 public class HBaseOperator {
 
@@ -400,13 +402,31 @@ public class HBaseOperator {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         for(long i = 0; i< 1<<40; i ++) {
-            String user = "xingzheng" + Long.toString(i);
             String rowKey = Long.toString(i);
-            list.add(insertValueFactory(rowKey,"Order","order", user));
+            String order = randomOrder();
+            String user = randomUser();
+            list.add(insertValueFactory(rowKey,"Order","order", order));
+            list.add(insertValueFactory(rowKey,"UserID","userID", user));
         }
 
         //更新到表中
         insertMany(tableName,list);
+    }
+
+    public static String randomOrder() {
+        String order = null;
+        Random random = new Random();
+        for(int orderLength = 0; orderLength < 10 ; orderLength ++){
+            order+=random.nextInt(10);
+        }
+        return order;
+    }
+
+    public static String randomUser() {
+        String user = null;
+        Random random = new Random();
+        user = random.nextInt(1<<10);
+        return user;
     }
 
     
