@@ -6,10 +6,11 @@ import java.util.Map;
 
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
+import org.apache.flink.api.common.operators.Order;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.operators.MapOperator;
-import org.apache.flink.api.java.tuple.Tuple1;
+import org.apache.flink.api.java.tuple.*;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
 
@@ -37,14 +38,20 @@ public class JoinWithoutSink {
         env.getConfig().setGlobalJobParameters(config);
         
         DataSet<NAME> names = env.fromElements(
-            new NAME("001","xingzheng1"),
             new NAME("002","xingzheng2"),
+            new NAME("001","xingzheng1"),
             new NAME("003","xingzheng3")
-        );
+        ).sortPartition("studentID", Order.ASCENDING);
 
-        DataSet<Tuple1<NAME>> innerTableDataSet = env.createInput((new HbaseInputForm_inner()).setStartRow("001").setEndRow("003"));
-        innerTableDataSet.print();
 
+
+        DataSet<Tuple1<NAME>> innerTableDataSet = env.createInput((new HbaseInputForm_inner()).setStartRow("001").setEndRow("007"));
+        DataSet<NAME> sortedInnerTableDataSet = innerTableDataSet.map(new RichMapFunction<Tuple1<NAME>,NAME>(){
+            @Override
+            public NAME map(Tuple1<NAME> tuple) {
+                return tuple.f0;
+            }
+        }).sortPartition("studentID", Order.ASCENDING);
 
         DataSet<GRADES> grades = env.fromElements(
             new GRADES("001","99","98","97"),
@@ -60,6 +67,9 @@ public class JoinWithoutSink {
             new GRADES("011","95","56","97"),
             new GRADES("012","95","56","97")
         );
+
+        // DataSet<Tuple2<GRADES,Tuple1<NAME>>> result2 = grades.join(innerTableDataSet).where("studentID").equalTo("studentID");
+        // result2.print();
 
         DataSet<String> result = grades
                 .flatMap(new RichFlatMapFunction<GRADES, String>() {
