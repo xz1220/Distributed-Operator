@@ -71,6 +71,10 @@ public class JoinWithoutSink {
         // DataSet<Tuple2<GRADES,Tuple1<NAME>>> result2 = grades.join(innerTableDataSet).where("studentID").equalTo("studentID");
         // result2.print();
 
+        for(int i = 0; i < grades.count() ; i++) {
+            grades
+        }
+
         DataSet<String> result = grades
                 .flatMap(new RichFlatMapFunction<GRADES, String>() {
                     @Override
