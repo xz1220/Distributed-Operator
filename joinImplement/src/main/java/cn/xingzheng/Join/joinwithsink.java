@@ -1,13 +1,13 @@
-package cn.xingzheng.JoinWithSink;
+package cn.xingzheng.Join;
 
 import java.util.Collection;
 
-import org.apache.flink.api.common.functions.RichMapFunction;
+import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.configuration.Configuration;
 
 import cn.xingzheng.DataType.*;
+import org.apache.flink.util.Collector;
 
 public class joinwithsink {
 
@@ -44,26 +44,23 @@ public class joinwithsink {
             new Grades("012","95","56","97")
         );
 
-        DataSet<String> result = grades.map(new RichMapFunction<Grades,String>(){
-            @Override
-            public void open(Configuration parameters) throws Exception {
-                // 3. Access the broadcast DataSet as a Collection
-                Collection<Name> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetName");
-            }
+        DataSet<String> result = grades
+                .flatMap(new RichFlatMapFunction<Grades, String>() {
+                    @Override
+                    public void flatMap(Grades value, Collector<String> out) throws Exception {
+                        Collection<Name> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetName");
+                        for (Name name: broadcastSet) {
+                            if (name.studentID.equals(value.studentID)) {
+                                out.collect(name.toString() + " " + value.toString());
+                            }
+                        }
+                    }
 
-            @Override
-            public String map(Grades grades) throws Exception {
-                Collection<Name> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetName");
-                // for (Name name: broadcastSet) {
-                //     System.out.println(name.toString());
-                // }
-                // System.out.println(grades.toString());
-                return grades.toString() + " " + broadcastSet.size(); 
-            }
-        }).withBroadcastSet(names, "broadcastSetName");
+                })
+                .withBroadcastSet(names, "broadcastSetName");
 
-        grades.print();
         result.print();
-
     }
 }
+
+

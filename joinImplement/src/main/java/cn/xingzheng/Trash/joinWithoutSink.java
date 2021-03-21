@@ -1,15 +1,6 @@
-package cn.xingzheng.JoinWithoutSink;
+package cn.xingzheng.Trash;
 
-import cn.xingzheng.HbaseOnFlink.HBaseInputFormatJava;
-import cn.xingzheng.HbaseOnFlink.HBaseOutputFormatJava;
-import cn.xingzheng.HbaseOnFlink.HBaseReaderJava;
-import cn.xingzheng.HbaseOnFlink.HBaseWriterJava;
-import org.apache.commons.net.ntp.TimeStamp;
-import org.apache.flink.api.common.functions.FilterFunction;
-import org.apache.flink.api.common.functions.JoinFunction;
-import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
 
 import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.common.state.ListStateDescriptor;
@@ -18,9 +9,6 @@ import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeHint;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.functions.KeySelector;
-import org.apache.flink.api.java.tuple.*;
 import org.apache.flink.api.java.typeutils.ListTypeInfo;
 import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.TimeCharacteristic;
@@ -29,32 +17,15 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.KeyedBroadcastProcessFunction;
-import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
 import org.apache.flink.util.Collector;
 import org.apache.flink.configuration.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HConstants;
-import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.configuration.Configuration;
 
-import java.awt.*;
-import java.security.Key;
-import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.*;
 import cn.xingzheng.DataType.*;
 import cn.xingzheng.Utils.*;
-import org.apache.hbase.thirdparty.com.google.protobuf.MapEntry;
-import org.junit.Rule;
-import scala.Array;
-import scala.annotation.meta.param;
-import scala.xml.PrettyPrinter.Para;
 // import sun.lwawt.macosx.CSystemTray;
 
 public class joinWithoutSink {

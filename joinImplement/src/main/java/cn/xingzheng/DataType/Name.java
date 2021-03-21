@@ -1,5 +1,8 @@
 package cn.xingzheng.DataType;
 
+import org.apache.flink.api.java.tuple.Tuple;
+import scala.tools.nsc.backend.jvm.opt.BoxUnbox;
+
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.time.Instant;
@@ -37,5 +40,6 @@ public class Name implements  Serializable, Comparable<Name> {
          return other instanceof Name &&
             this.studentName == ((Name) other).studentName;
      }
+
 
 }
