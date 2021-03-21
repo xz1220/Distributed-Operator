@@ -124,7 +124,7 @@ services:
         ipv4_address: 172.27.0.9
 
   jobmanager:
-    image: danxing/flink:latest
+    image: danxing/flink:1.10.2-scala_2.12
     expose:
       - "6123"
     ports:
@@ -141,7 +141,7 @@ services:
         ipv4_address: 172.27.0.10
 
   taskmanager:
-    image: danxing/flink:latest
+    image: danxing/flink:1.10.2-scala_2.12
     expose:
       - "6121"
       - "6122"
