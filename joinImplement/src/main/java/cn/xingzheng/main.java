@@ -27,7 +27,7 @@ public class main {
         if (commandLine.hasOption("f")) {
               function = commandLine.getOptionValue("f");
               if (function.compareTo("utils") == 0) {
-                    HBaseOperator.insertCasesForStream();;
+                    // HBaseOperator.insertCasesForStream();;
               }else{
                   System.out.println("Arguments Error");
               }

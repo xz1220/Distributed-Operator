@@ -108,7 +108,7 @@ public class HBaseOperator {
         }
         table.put(puts);
         table.close();
-        System.out.println("add data Success!");
+        System.out.println("add data Success!" + " startRowkey:" + list.get(0));
     }
 
     /**
@@ -402,63 +402,27 @@ public class HBaseOperator {
         createTable(tableName, columnFamilys);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        // for(long i = 0; i< 1<<10; i ++) {
-        //     String rowKey = generateRowkey(1<<30, i);
-        //     String order = randomOrder();
-        //     String user = randomUser();
-        //     // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
-        //     list.add(insertValueFactory(rowKey,"Order","order", order));
-        //     list.add(insertValueFactory(rowKey,"UserID","userID", user));
-        // }
-        // //更新到表中
-        // insertMany(tableName,list);
-
-        // list.clear();
-        // for(long i = 1<<10; i< 1<<20; i ++) {
-        //     String rowKey = generateRowkey(1<<30, i);
-        //     String order = randomOrder();
-        //     String user = randomUser();
-        //     // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
-        //     list.add(insertValueFactory(rowKey,"Order","order", order));
-        //     list.add(insertValueFactory(rowKey,"UserID","userID", user));
-        // }
-        // //更新到表中
-        // insertMany(tableName,list);
-        // list.clear();
-
+        long batch_size = 1<<15 ; 
+        long count = 0;
         list.clear();
-        for(long i = (1<<21); i< (1<<22); i ++) {
+        for(long i = (1<<22); i< (1<<30); i ++) {
+            count ++;
             String rowKey = generateRowkey(1<<30, i);
             String order = randomOrder();
             String user = randomUser();
             // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
             list.add(insertValueFactory(rowKey,"Order","order", order));
             list.add(insertValueFactory(rowKey,"UserID","userID", user));
+
+            if (count == batch_size) {
+                insertMany(tableName,list);
+                list.clear();
+                count = 0;
+            }
         }
         //更新到表中
         insertMany(tableName,list);
         list.clear();
-        
-        // long i = 1<<20 ;
-        // while( i < 1<<25) {
-        //     list.clear();
-        //     System.out.println("开始插入第" + i + "条数据");
-        //     for(long index = i; index < (i+ 1<<10); index+=1) {
-        //         String rowKey = generateRowkey(1<<30, index);
-        //         String order = randomOrder();
-        //         String user = randomUser();
-        //         System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
-        //         list.add(insertValueFactory(rowKey,"Order","order", order));
-        //         list.add(insertValueFactory(rowKey,"UserID","userID", user));
-        //     }
-        //     System.out.println("数据生产结束");
-        //     insertMany(tableName,list);
-        //     i += 1<<10;
-        //     System.out.println("插入第" + i + "条数据结束");
-        // }
-
-        //更新到表中
-        // insertMany(tableName,list);
     }
 
     public static String randomOrder() {
