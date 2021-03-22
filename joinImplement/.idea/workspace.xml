@@ -5,17 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="842a1324-0c68-486d-b493-ad471f4dd0da" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Join (1).iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Join (2).iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Join.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/ReadingHbase/HbaseInputForm_Order.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/joinImplement.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/joinImplement.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Join (1).iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Join (2).iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-flink-run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker-flink-run.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/GRADES.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/GRADES.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Join/JoinWithoutSink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Join/JoinWithoutSink.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/Base/HBaseOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/Base/HBaseOperator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
@@ -30,6 +43,14 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="$MAVEN_REPOSITORY$" />
+        <option name="userSettingsFile" value="$USER_HOME$/.m2/setting.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
   </component>
@@ -40,13 +61,14 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$MAVEN_REPOSITORY$/org" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -54,12 +76,17 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
-  <component name="RunManager" selected="Application.joinwithsink">
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="cn.xingzheng.Utils.HbaseUtils.ReadingHbase" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.JoinWithoutSink">
     <configuration name="FlinkHBaseDemo (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="cn.xingzheng.HbaseOnFlink.FlinkHBaseDemo" />
       <module name="hbase-flink-learning" />
@@ -86,12 +113,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="HBaseJavaApiDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="cn.xingzheng.HbaseOnJava.HBaseJavaApiDemo" />
-      <module name="hbase-test" />
+    <configuration name="JoinWithoutSink" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cn.xingzheng.Join.JoinWithoutSink" />
+      <module name="Join" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="cn.xingzheng.HbaseOnJava.*" />
+          <option name="PATTERN" value="cn.xingzheng.Join.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -174,11 +201,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.JoinWithoutSink" />
         <item itemvalue="Application.joinwithsink" />
         <item itemvalue="Application.joinWithoutSink" />
         <item itemvalue="Application.FlinkHBaseDemo (1)" />
         <item itemvalue="Application.FlinkHBaseDemo" />
-        <item itemvalue="Application.HBaseJavaApiDemo" />
       </list>
     </recent_temporary>
   </component>

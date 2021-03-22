@@ -139,6 +139,8 @@ services:
     networks:
       flinkHbase: 
         ipv4_address: 172.27.0.10
+    volumes:
+      - /home/xingzheng/Distributed-Operator/output/jobmanager:/home
 
   taskmanager:
     image: danxing/flink:1.10.2-scala_2.12
@@ -159,7 +161,8 @@ services:
     networks:
       flinkHbase: 
         ipv4_address: 172.27.0.11
-
+    volumes:
+      - /home/xingzheng/Distributed-Operator/output/taskmanager:/home
   # jobmanager:
   #   image: danxing/flink:latest
   #   ports:

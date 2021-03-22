@@ -1,18 +1,15 @@
 package cn.xingzheng.Utils.HbaseUtils.Base;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.*;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CompareOperator;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.lang.*;
+import java.util.*;
 
 public class HBaseOperator {
 
@@ -23,13 +20,15 @@ public class HBaseOperator {
     static Connection conn = null;
     static {
         conf = HBaseConfiguration.create();
-        conf.set("hbase.zookeeper.quorum", "127.0.0.1");
+        conf.set("hbase.zookeeper.quorum", "172.27.0.7");
         try {
             conn = ConnectionFactory.createConnection(conf);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
+    public static long maxIndex = 1<<30;
 
     /**
      * 创建只有一个列簇的表
@@ -405,9 +404,9 @@ public class HBaseOperator {
         long batch_size = 1<<15 ; 
         long count = 0;
         list.clear();
-        for(long i = (1<<22); i< (1<<30); i ++) {
+        for(long i = (1<<22); i< (maxIndex); i ++) {
             count ++;
-            String rowKey = generateRowkey(1<<30, i);
+            String rowKey = generateRowkey(maxIndex, i);
             String order = randomOrder();
             String user = randomUser();
             // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);

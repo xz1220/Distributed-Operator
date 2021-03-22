@@ -1,25 +1,27 @@
 package cn.xingzheng.Join;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import cn.xingzheng.DataType.User;
+import cn.xingzheng.Utils.HbaseUtils.ReadingHbase.HbaseInputForm_Order;
+import cn.xingzheng.Utils.HbaseUtils.ReadingHbase.HbaseInputForm_User;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.operators.Order;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.operators.MapOperator;
-import org.apache.flink.api.java.tuple.*;
+import org.apache.flink.api.java.operators.DataSource;
+import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.api.java.utils.ParameterTool;
-import org.apache.flink.configuration.Configuration;
-
-import cn.xingzheng.DataType.*;
-import cn.xingzheng.Utils.HbaseUtils.ReadingHbase.HbaseInputForm_inner;
-
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.util.Collector;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 public class JoinWithoutSink {
+
+    public static long batch_size = 100000;
+
     public static void main(String[] args) throws Exception {
         try {
             joinWithoutSink("studentID");
@@ -36,60 +38,47 @@ public class JoinWithoutSink {
         parameters.put("JoinKey", JoinKey);
         ParameterTool config = ParameterTool.fromMap(parameters);
         env.getConfig().setGlobalJobParameters(config);
-        
-        DataSet<NAME> names = env.fromElements(
-            new NAME("002","xingzheng2"),
-            new NAME("001","xingzheng1"),
-            new NAME("003","xingzheng3")
-        ).sortPartition("studentID", Order.ASCENDING);
 
 
-
-        DataSet<Tuple1<NAME>> innerTableDataSet = env.createInput((new HbaseInputForm_inner()).setStartRow("001").setEndRow("007"));
-        DataSet<NAME> sortedInnerTableDataSet = innerTableDataSet.map(new RichMapFunction<Tuple1<NAME>,NAME>(){
+        DataSet<Tuple1<User>> innerTableDataSet = env.createInput((new HbaseInputForm_User()));
+        DataSet<User> sortedInnerTableDataSet = innerTableDataSet.map(new RichMapFunction<Tuple1<User>,User>(){
             @Override
-            public NAME map(Tuple1<NAME> tuple) {
+            public User map(Tuple1<User> tuple) {
                 return tuple.f0;
             }
-        }).sortPartition("studentID", Order.ASCENDING);
+        }).sortPartition("userid", Order.ASCENDING);
 
-        DataSet<GRADES> grades = env.fromElements(
-            new GRADES("001","99","98","97"),
-            new GRADES("002","96","45","97"),
-            new GRADES("003","97","98","97"),
-            new GRADES("004","94","98","97"),
-            new GRADES("005","23","23","97"),
-            new GRADES("006","95","56","97"),
-            new GRADES("007","95","56","97"),
-            new GRADES("008","95","56","97"),
-            new GRADES("009","95","56","97"),
-            new GRADES("010","95","56","97"),
-            new GRADES("011","95","56","97"),
-            new GRADES("012","95","56","97")
-        );
+        long start_index = 1;
+        long batch = 3;
 
-        // DataSet<Tuple2<GRADES,Tuple1<NAME>>> result2 = grades.join(innerTableDataSet).where("studentID").equalTo("studentID");
-        // result2.print();
+        for( int i =0 ; i< batch; i++) {
+            DataSource<Tuple1<cn.xingzheng.DataType.Order>> order =env.createInput((new HbaseInputForm_Order()).setStartRow(start_index).setEndRow(start_index+batch_size));
+            start_index += batch_size;
+            DataSet< cn.xingzheng.DataType.Order> outer =  order.map(new MapFunction<Tuple1<cn.xingzheng.DataType.Order>, cn.xingzheng.DataType.Order>() {
+                @Override
+                public cn.xingzheng.DataType.Order map(Tuple1<cn.xingzheng.DataType.Order> value) {
+                    return value.f0;
+                }
+            });
 
-        for(int i = 0; i < grades.count() ; i++) {
-            grades
-        }
-
-        DataSet<String> result = grades
-                .flatMap(new RichFlatMapFunction<GRADES, String>() {
-                    @Override
-                    public void flatMap(GRADES value, Collector<String> out) throws Exception {
-                        Collection<NAME> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetNAME");
-                        for (NAME NAME: broadcastSet) {
-                            if (NAME.studentID.equals(value.studentID)) {
-                                out.collect(NAME.toString() + " " + value.toString());
+            DataSet<String> result = outer
+                    .flatMap(new RichFlatMapFunction< cn.xingzheng.DataType.Order, String>() {
+                        @Override
+                        public void flatMap(cn.xingzheng.DataType.Order value, Collector<String> out) throws Exception {
+                            Collection<User> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetNAME");
+                            for (User user: broadcastSet) {
+                                if (user.userid.equals(value.userid)) {
+                                    out.collect(user.toString() + " " + value.toString());
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                })
-                .withBroadcastSet(names, "broadcastSetNAME");
+                    })
+                    .withBroadcastSet(sortedInnerTableDataSet, "broadcastSetNAME");
+            result.print();
+            result.writeAsText("/home/xingzheng/output/joinWithoutSink/batch_"+i, FileSystem.WriteMode.OVERWRITE);
+        }
 
-        result.print();
     }
 }

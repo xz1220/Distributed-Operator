@@ -9,3 +9,6 @@ joinImplement/target/*
 joinImplement/.idea
 joinImplement/out
 joinImplement/hbase
+
+# ignore oyutput
+output/*

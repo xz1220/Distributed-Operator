@@ -1,7 +1,5 @@
 package cn.xingzheng.DataType;
 
-import org.apache.kafka.common.protocol.types.Field;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
