@@ -1,5 +1,6 @@
 package cn.xingzheng.Utils.HbaseUtils.Base;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
@@ -401,20 +402,67 @@ public class HBaseOperator {
         createTable(tableName, columnFamilys);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        for(long i = 0; i< 1<<40; i ++) {
-            String rowKey = Long.toString(i);
+        // for(long i = 0; i< 1<<10; i ++) {
+        //     String rowKey = generateRowkey(1<<30, i);
+        //     String order = randomOrder();
+        //     String user = randomUser();
+        //     // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
+        //     list.add(insertValueFactory(rowKey,"Order","order", order));
+        //     list.add(insertValueFactory(rowKey,"UserID","userID", user));
+        // }
+        // //更新到表中
+        // insertMany(tableName,list);
+
+        // list.clear();
+        // for(long i = 1<<10; i< 1<<20; i ++) {
+        //     String rowKey = generateRowkey(1<<30, i);
+        //     String order = randomOrder();
+        //     String user = randomUser();
+        //     // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
+        //     list.add(insertValueFactory(rowKey,"Order","order", order));
+        //     list.add(insertValueFactory(rowKey,"UserID","userID", user));
+        // }
+        // //更新到表中
+        // insertMany(tableName,list);
+        // list.clear();
+
+        list.clear();
+        for(long i = (1<<21); i< (1<<22); i ++) {
+            String rowKey = generateRowkey(1<<30, i);
             String order = randomOrder();
             String user = randomUser();
+            // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
             list.add(insertValueFactory(rowKey,"Order","order", order));
             list.add(insertValueFactory(rowKey,"UserID","userID", user));
         }
-
         //更新到表中
         insertMany(tableName,list);
+        list.clear();
+        
+        // long i = 1<<20 ;
+        // while( i < 1<<25) {
+        //     list.clear();
+        //     System.out.println("开始插入第" + i + "条数据");
+        //     for(long index = i; index < (i+ 1<<10); index+=1) {
+        //         String rowKey = generateRowkey(1<<30, index);
+        //         String order = randomOrder();
+        //         String user = randomUser();
+        //         System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
+        //         list.add(insertValueFactory(rowKey,"Order","order", order));
+        //         list.add(insertValueFactory(rowKey,"UserID","userID", user));
+        //     }
+        //     System.out.println("数据生产结束");
+        //     insertMany(tableName,list);
+        //     i += 1<<10;
+        //     System.out.println("插入第" + i + "条数据结束");
+        // }
+
+        //更新到表中
+        // insertMany(tableName,list);
     }
 
     public static String randomOrder() {
-        String order = null;
+        String order = "";
         Random random = new Random();
         for(int orderLength = 0; orderLength < 10 ; orderLength ++){
             order+=random.nextInt(10);
@@ -425,148 +473,29 @@ public class HBaseOperator {
     public static String randomUser() {
         String user = null;
         Random random = new Random();
-        user = random.nextInt(1<<10);
+        user = Long.toString((long)random.nextInt(1<<10));
         return user;
     }
 
-    
+    public static String generateRowkey(long maxth, long currentIndex) {
+        int length = Long.toString(maxth).length();
+        String index = Long.toString(currentIndex);
+        while(index.length() < length) {
+            index = "0" + index;
+        }
+        return index;
+    }
 
-
-    public static void insertCasesForStream() throws Exception{
-        //创建表（只有一个列簇）
-//        createTableOne();
-
-        // 创建表：
-        // Table: grades
-        // rowkey:userID  columnfamily: details
-        // UserID        subjects      grades
-
-        TableName tableName = TableName.valueOf("gradesV1");
-
-        String[] columnFamilys = {"English", "Chinese", "Math"};
-        // createTable(tableName, columnFamilys);
-
-        //添加数据
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        list.add(insertValueFactory("003","English","english", "11"));
-        list.add(insertValueFactory("003","Chinese","chinese", "22"));
-        list.add(insertValueFactory("003","Math","math", "33"));
-        list.add(insertValueFactory("004","English","english", "97"));
-        list.add(insertValueFactory("004","Chinese","chinese", "98"));
-        list.add(insertValueFactory("004","Math","math", "98"));
-
-        // // 循环插入数据
-        // for() {
-
-        // }
-
-        //更新到表中
-        insertMany(tableName,list);
-
-        TableName tableName2 = TableName.valueOf("name");
-        String[] columnFamilysForName = {"Name"};
-        // createTable(tableName2, columnFamilysForName);
-
-        //添加数据
-        List<Map<String, Object>> list2 = new ArrayList<Map<String, Object>>();
-        list2.add(insertValueFactory("003","Name","name","kiven"));
-        list2.add(insertValueFactory("004","Name","name","lisa"));
-        insertMany(tableName2,list2);
-
-        // 创建表(包含多个列簇)
-        // TableName tableName = TableName.valueOf("test");
-        // String[] columnFamilys = { "article", "author" };
-        // createTable(tableName, columnFamilys);
-
-        //添加数据
-        // List<Map<String,Object>> listMap=new ArrayList<Map<String, Object>>();
-        // Map<String,Object> map1=new HashMap<String,Object>();
-        // map1.put("rowKey","ce_shi1");
-        // map1.put("columnFamily","article");
-        // map1.put("columnName","title");
-        // map1.put("columnValue","Head First HBase");
-        // listMap.add(map1);
-        // Map<String,Object> map2=new HashMap<String,Object>();
-        // map2.put("rowKey","ce_shi1");
-        // map2.put("columnFamily","article");
-        // map2.put("columnName","content");
-        // map2.put("columnValue","HBase is the Hadoop database");
-        // listMap.add(map2);
-        // Map<String,Object> map3=new HashMap<String,Object>();
-        // map3.put("rowKey","ce_shi1");
-        // map3.put("columnFamily","article");
-        // map3.put("columnName","tag");
-        // map3.put("columnValue","Hadoop,HBase,NoSQL");
-        // listMap.add(map3);
-        // Map<String,Object> map4=new HashMap<String,Object>();
-        // map4.put("rowKey","ce_shi1");
-        // map4.put("columnFamily","author");
-        // map4.put("columnName","name");
-        // map4.put("columnValue","nicholas");
-        // listMap.add(map4);
-        // Map<String,Object> map5=new HashMap<String,Object>();
-        // map5.put("rowKey","ce_shi1");
-        // map5.put("columnFamily","author");
-        // map5.put("columnName","nickname");
-        // map5.put("columnValue","lee");
-        // listMap.add(map5);
-        // Map<String,Object> map6=new HashMap<String,Object>();
-        // map6.put("rowKey","ce_shi2");
-        // map6.put("columnFamily","author");
-        // map6.put("columnName","name");
-        // map6.put("columnValue","spark");
-        // listMap.add(map6);
-        // Map<String,Object> map7=new HashMap<String,Object>();
-        // map7.put("rowKey","ce_shi2");
-        // map7.put("columnFamily","author");
-        // map7.put("columnName","nickname");
-        // map7.put("columnValue","hadoop");
-        // listMap.add(map7);
-        // insertMany(tableName,listMap);
-
-        //根据RowKey，列簇，列名修改值
-        // String rowKey="ce_shi2";
-        // String columnFamily="author";
-        // String columnName="name";
-        // String columnValue="hbase";
-//        updateData(tableName,rowKey,columnFamily,columnName,columnValue);
-
-
-        // String rowKey1="ce_shi1";
-        // String columnFamily1="article";
-        // String columnName1="name";
-        // List<String> columnNames=new ArrayList<String>();
-        // columnNames.add("content");
-        // columnNames.add("title");
-        //删除某行某个列簇的某个列
-//        deleteData(tableName,rowKey1,columnFamily1,columnName1);
-        //删除某行某个列簇
-//        deleteData(tableName,rowKey1,columnFamily1);
-        //删除某行某个列簇的多个列
-//        deleteData(tableName,rowKey1,columnFamily1,columnNames);
-        //删除某行
-//        deleteData(tableName,rowKey1);
-        //根据rowKey查询数据
-    //    getResult(tableName,"rowKey1");
-
-        //全表扫描
-        // scanTable(tableName);
-
-        //rowKey过滤器
-//        rowkeyFilter(tableName);
-
-        //列值过滤器
-//        singColumnFilter(tableName);
-
-        //列名前缀过滤器
-//        columnPrefixFilter(tableName);
-
-        //过滤器集合
-//        filterSet(tableName);
+    public static void rowCountByCoprocessor(String tablename){
+        try {
+           // 协处理器
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) throws Exception {
-        insterUser();
+        insterOrder();
     }
 
 }
