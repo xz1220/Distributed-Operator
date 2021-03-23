@@ -3,6 +3,8 @@ package cn.xingzheng.Join;
 import cn.xingzheng.DataType.User;
 import cn.xingzheng.Utils.HbaseUtils.ReadingHbase.HbaseInputForm_Order;
 import cn.xingzheng.Utils.HbaseUtils.ReadingHbase.HbaseInputForm_User;
+import cn.xingzheng.Utils.HbaseUtils.WritingHbase.HbaseOutputFormat_test;
+
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
@@ -15,12 +17,13 @@ import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.util.Collector;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 public class JoinWithoutSink {
 
-    public static long batch_size = 100000;
+    public static long batch_size = 1000;
 
     public static void main(String[] args) throws Exception {
         try {
@@ -49,7 +52,10 @@ public class JoinWithoutSink {
         }).sortPartition("userid", Order.ASCENDING);
 
         long start_index = 1;
-        long batch = 3;
+        long batch = 1;
+        ArrayList<String> columns = new ArrayList<String>();
+        columns.add("userid");
+        columns.add("username");
 
         for( int i =0 ; i< batch; i++) {
             DataSource<Tuple1<cn.xingzheng.DataType.Order>> order =env.createInput((new HbaseInputForm_Order()).setStartRow(start_index).setEndRow(start_index+batch_size));
@@ -68,7 +74,7 @@ public class JoinWithoutSink {
                             Collection<User> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetNAME");
                             for (User user: broadcastSet) {
                                 if (user.userid.equals(value.userid)) {
-                                    out.collect(user.toString() + " " + value.toString());
+                                    out.collect(user.toString());
                                     break;
                                 }
                             }
@@ -76,9 +82,12 @@ public class JoinWithoutSink {
 
                     })
                     .withBroadcastSet(sortedInnerTableDataSet, "broadcastSetNAME");
-            result.print();
-            result.writeAsText("/home/xingzheng/output/joinWithoutSink/batch_"+i, FileSystem.WriteMode.OVERWRITE);
+            // result.print();
+            // result.writeAsText("/home/xingzheng/output/joinWithoutSink_Test/batch_"+i, FileSystem.WriteMode.OVERWRITE);
+            result.output((new HbaseOutputFormat_test()).setTableName("OutputV1").setColumns(columns));
         }
+
+        env.execute();
 
     }
 }

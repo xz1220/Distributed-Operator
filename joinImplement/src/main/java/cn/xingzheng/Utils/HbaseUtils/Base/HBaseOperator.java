@@ -29,6 +29,7 @@ public class HBaseOperator {
     }
 
     public static long maxIndex = 1<<30;
+    public static String tempTableName = "OutputV1";
 
     /**
      * 创建只有一个列簇的表
@@ -36,8 +37,8 @@ public class HBaseOperator {
      */
     public static void createTable() throws Exception{
         Admin admin = conn.getAdmin();
-        if (!admin.tableExists(TableName.valueOf("test"))){
-            TableName tableName = TableName.valueOf("test");
+        if (!admin.tableExists(TableName.valueOf(tempTableName))){
+            TableName tableName = TableName.valueOf(tempTableName);
             //表描述器构造器
             TableDescriptorBuilder tdb = TableDescriptorBuilder.newBuilder(tableName);
             //列族描述器构造器
@@ -60,10 +61,10 @@ public class HBaseOperator {
     /**
      * 创建表（包含多个列族）
      * @param tableName
-     * @param columnFamilys
+     * @param columns
      * @throws Exception
      */
-    public static void createTable(TableName tableName, String[] columnFamilys) throws Exception{
+    public static void createTable(TableName tableName, ArrayList<String> columns) throws Exception{
         Admin admin = conn.getAdmin();
         if (!admin.tableExists(tableName)){
             //表描述构造器
@@ -72,7 +73,7 @@ public class HBaseOperator {
             ColumnFamilyDescriptorBuilder cdb;
             //获得列描述器
             ColumnFamilyDescriptor cfd;
-            for (String columnFamily: columnFamilys){
+            for (String columnFamily: columns){
                 cdb = ColumnFamilyDescriptorBuilder.newBuilder(Bytes.toBytes(columnFamily));
                 cfd = cdb.build();
                 //添加列族
@@ -378,8 +379,9 @@ public class HBaseOperator {
 
     public static void insterUser() throws Exception {
         TableName tableName = TableName.valueOf("User");
-
-        String[] columnFamilys = {"Username"};
+        ArrayList<String> columnFamilys = new ArrayList<String>();
+        // String[] columnFamilys = {"Username"};
+        columnFamilys.add("Username");
         createTable(tableName, columnFamilys);
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -396,15 +398,17 @@ public class HBaseOperator {
 
     public static void insterOrder() throws Exception {
         TableName tableName = TableName.valueOf("Order");
-
-        String[] columnFamilys = {"Order","UserID"};
+        ArrayList<String> columnFamilys = new ArrayList<String>();
+        // String[] columnFamilys = {"Order","UserID"};
+        columnFamilys.add("Order");
+        columnFamilys.add("UserID");
         createTable(tableName, columnFamilys);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         long batch_size = 1<<15 ; 
         long count = 0;
         list.clear();
-        for(long i = (1<<22); i< (maxIndex); i ++) {
+        for(long i = (162594817); i< (maxIndex); i ++) {
             count ++;
             String rowKey = generateRowkey(maxIndex, i);
             String order = randomOrder();
@@ -458,7 +462,11 @@ public class HBaseOperator {
     }
 
     public static void main(String[] args) throws Exception {
-        insterOrder();
+        ArrayList<String> columns = new ArrayList<String>();
+        columns.add("userid");
+        columns.add("username");
+
+        createTable(TableName.valueOf("OutputV1"), columns);
     }
 
 }

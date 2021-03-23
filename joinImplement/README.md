@@ -15,3 +15,37 @@ java -jar <path to jar>     # run the code locally
 
 under the src/main/java, the code shows how to do all things. Edit it to suit your needs.
 
+## Hbase Cluster
+
+### Tables infor
+
+#### User
+
+<details>
+<summary><strong> summary </strong></summary>
+
+</details>
+
+#### Order
+
+<details>
+<summary><strong> summary </strong></summary>
+
+```shell
+ HBase Counters
+                BYTES_IN_REMOTE_RESULTS=8780120064
+                BYTES_IN_RESULTS=8780120064
+                MILLIS_BETWEEN_NEXTS=573447
+                NOT_SERVING_REGION_EXCEPTION=0
+                NUM_SCANNER_RESTARTS=0
+                NUM_SCAN_RESULTS_STALE=0
+                REGIONS_SCANNED=2
+                REMOTE_RPC_CALLS=6823
+                REMOTE_RPC_RETRIES=0
+                ROWS_FILTERED=6821
+                ROWS_SCANNED=162594816      # rows of content
+                RPC_CALLS=6823
+                RPC_RETRIES=0
+```
+
+</details>
