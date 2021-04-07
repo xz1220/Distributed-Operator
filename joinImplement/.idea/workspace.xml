@@ -5,22 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="842a1324-0c68-486d-b493-ad471f4dd0da" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Join.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/ReadingHbase/HbaseInputForm_Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/joinImplement.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/joinImplement.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Join (1).iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Join (2).iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-flink-run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker-flink-run.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/GRADES.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/GRADES.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Join/JoinWithoutSink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Join/JoinWithoutSink.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/Base/HBaseOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/Base/HBaseOperator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +62,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
