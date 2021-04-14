@@ -52,7 +52,7 @@ public class JoinWithoutSink {
         }).sortPartition("userid", Order.ASCENDING);
 
         long start_index = 1;
-        long batch = 1;
+        long batch = 3;
         ArrayList<String> columns = new ArrayList<String>();
         columns.add("userid");
         columns.add("username");
@@ -82,9 +82,9 @@ public class JoinWithoutSink {
 
                     })
                     .withBroadcastSet(sortedInnerTableDataSet, "broadcastSetNAME");
-            // result.print();
+            result.print();
             // result.writeAsText("/home/xingzheng/output/joinWithoutSink_Test/batch_"+i, FileSystem.WriteMode.OVERWRITE);
-            result.output((new HbaseOutputFormat_test()).setTableName("OutputV1").setColumns(columns));
+            // result.output((new HbaseOutputFormat_test()).setTableName("OutputV1").setColumns(columns));
         }
 
         env.execute();
