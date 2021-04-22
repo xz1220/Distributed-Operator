@@ -27,13 +27,13 @@ public class JoinWithoutSink {
 
     public static void main(String[] args) throws Exception {
         try {
-            joinWithoutSink("studentID");
+            joinWithoutSinkMiniBatch("studentID");
         }catch (Exception e) {
             e.printStackTrace();
         }
     }
     
-    public static void joinWithoutSink( String JoinKey) throws Exception {
+    public static void joinWithoutSinkMiniBatch( String JoinKey) throws Exception {
         // Get the run-time
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
