@@ -377,6 +377,15 @@ public class HBaseOperator {
 
     }
 
+
+    /**
+     * 以下是随机数据生成案例，主要是插入三个表
+     * Oder表： 订单号 以及 用户ID
+     * User表： 用户ID 以及 用户名称
+     * Case表： 订单号 以及 商品号
+     * 
+     */
+
     public static void insterUser() throws Exception {
         TableName tableName = TableName.valueOf("User");
         ArrayList<String> columnFamilys = new ArrayList<String>();
@@ -426,6 +435,50 @@ public class HBaseOperator {
         //更新到表中
         insertMany(tableName,list);
         list.clear();
+    }
+
+    public static void insertCase() throws Exception{
+        /**
+         * 初始化表名以及列名
+         */
+        TableName tableName = TableName.valueOf("Case");
+        ArrayList<String> columnFamilys = new ArrayList<String>();
+        // String[] columnFamilys = {"Order","UserID"};
+        columnFamilys.add("Order"); // 订单号码
+        columnFamilys.add("CaseID"); // 用户号
+        createTable(tableName, columnFamilys);
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        long batch_size = 1<<15 ; 
+        long count = 0;
+        list.clear();
+        for(long i = 0; i< (maxIndex); i ++) {
+            count ++;
+            String rowKey = generateRowkey(maxIndex, i);
+            String order = randomOrder();
+            String caseID = generateRandomCase();
+            // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
+            list.add(insertValueFactory(rowKey,"Order","order", order));
+            list.add(insertValueFactory(rowKey,"CaseID","caseID", caseID));
+
+            if (count == batch_size) {
+                insertMany(tableName,list);
+                list.clear();
+                count = 0;
+            }
+        }
+        //更新到表中
+        insertMany(tableName,list);
+        list.clear();
+    }
+
+    public static String generateRandomCase() {
+        String caseID = "";
+        Random r = new Random();
+        for(int caseLength = 0; caseLength < 6 ; caseLength ++){
+            caseID += r.nextInt(10);
+        }
+        return caseID;
     }
 
     public static String randomOrder() {
