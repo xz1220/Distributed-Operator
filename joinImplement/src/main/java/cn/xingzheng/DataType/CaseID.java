@@ -1,5 +1,7 @@
 package cn.xingzheng.DataType;
 
+import java.io.Serializable;
+
 public class CaseID implements Serializable {
     public String order;
     public String caseID;

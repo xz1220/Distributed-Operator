@@ -34,7 +34,9 @@ public class JoinWithoutSink {
     }
     
     public static void joinWithoutSinkMiniBatch( String JoinKey) throws Exception {
-        // Get the run-time
+        /**
+         * 创建运行时环境
+         */
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
         HashMap<String, String> parameters = new HashMap<String, String>();
@@ -74,7 +76,7 @@ public class JoinWithoutSink {
                             Collection<User> broadcastSet = getRuntimeContext().getBroadcastVariable("broadcastSetNAME");
                             for (User user: broadcastSet) {
                                 if (user.userid.equals(value.userid)) {
-                                    out.collect(user.toString());
+                                    out.collect(user.toString() + " " + value.toString());
                                     break;
                                 }
                             }

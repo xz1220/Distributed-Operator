@@ -49,3 +49,50 @@ under the src/main/java, the code shows how to do all things. Edit it to suit yo
 ```
 
 </details>
+
+#### Case
+
+<details>
+<summary><strong> summary </strong></summary>
+
+```shell
+
+                FILE: Number of write operations=0
+                HDFS: Number of bytes read=0
+                HDFS: Number of bytes written=0
+                HDFS: Number of read operations=0
+                HDFS: Number of large read operations=0
+                HDFS: Number of write operations=0
+        Map-Reduce Framework
+                Map input records=111065548
+                Map output records=0
+                Input split bytes=481
+                Spilled Records=0
+                Failed Shuffles=0
+                Merged Map outputs=0
+                GC time elapsed (ms)=1062
+                Total committed heap usage (bytes)=506855424
+        HBase Counters
+                BYTES_IN_REMOTE_RESULTS=5775408496
+                BYTES_IN_RESULTS=5775408496
+                MILLIS_BETWEEN_NEXTS=716350
+                NOT_SERVING_REGION_EXCEPTION=0
+                NUM_SCANNER_RESTARTS=0
+                NUM_SCAN_RESULTS_STALE=0
+                REGIONS_SCANNED=2
+                REMOTE_RPC_CALLS=4554
+                REMOTE_RPC_RETRIES=0
+                ROWS_FILTERED=4552
+                ROWS_SCANNED=111065548
+                RPC_CALLS=4554
+                RPC_RETRIES=0
+        org.apache.hadoop.hbase.mapreduce.RowCounter$RowCounterMapper$Counters
+                ROWS=111065548
+        File Input Format Counters 
+                Bytes Read=0
+        File Output Format Counters 
+                Bytes Written=0
+```
+
+
+

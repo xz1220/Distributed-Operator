@@ -159,8 +159,8 @@
                                     <!-- <mainClass>cn.xingzheng.HbaseOnJava.HBaseJavaApiDemo</mainClass> -->
                                     <!-- <mainClass>cn.xingzheng.HbaseOnFlink.FlinkHBaseDemo</mainClass> -->
 <!--                                    <mainClass>cn.xingzheng.main</mainClass>-->
-                                     <mainClass>cn.xingzheng.Join.JoinWithoutSink</mainClass>
-                                     <!-- <mainClass>cn.xingzheng.Utils.HbaseUtils.Base.HbaseOperator</mainClass> -->
+                                     <!-- <mainClass>cn.xingzheng.Join.JoinWithoutSink</mainClass> -->
+                                     <mainClass>cn.xingzheng.Utils.HbaseUtils.Base.HbaseOperator</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>reference.conf</resource>

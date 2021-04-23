@@ -437,6 +437,9 @@ public class HBaseOperator {
         list.clear();
     }
 
+    /**
+     * 插入新的表
+     */
     public static void insertCase() throws Exception{
         /**
          * 初始化表名以及列名
@@ -452,7 +455,7 @@ public class HBaseOperator {
         long batch_size = 1<<15 ; 
         long count = 0;
         list.clear();
-        for(long i = 0; i< (maxIndex); i ++) {
+        for(long i = 47564; i< (maxIndex/4); i ++) {
             count ++;
             String rowKey = generateRowkey(maxIndex, i);
             String order = randomOrder();
@@ -515,11 +518,10 @@ public class HBaseOperator {
     }
 
     public static void main(String[] args) throws Exception {
-        ArrayList<String> columns = new ArrayList<String>();
-        columns.add("userid");
-        columns.add("username");
-
-        createTable(TableName.valueOf("OutputV1"), columns);
+        /**
+         * 插入调用表
+         */
+        insertCase();
     }
 
 }

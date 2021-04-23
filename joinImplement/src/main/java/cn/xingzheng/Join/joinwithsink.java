@@ -25,6 +25,7 @@ public class joinwithsink {
          */
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
         
+        
     }
     
     public static void joinWithoutSink() throws Exception {

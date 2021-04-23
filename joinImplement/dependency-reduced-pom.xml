@@ -26,7 +26,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>cn.xingzheng.Join.JoinWithoutSink</mainClass>
+                  <mainClass>cn.xingzheng.Utils.HbaseUtils.Base.HbaseOperator.main</mainClass>
                 </transformer>
                 <transformer>
                   <resource>reference.conf</resource>

@@ -15,20 +15,23 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class HbaseInputForm_Order extends CustomTableInputFormat<Tuple1<Order>> {
+import cn.xingzheng.DataType.CaseID;
+import cn.xingzheng.Utils.HbaseUtils.Base.CustomTableInputFormat;
 
-    private String tableNameString = "Order";
+public class HbaseInputForm_Case extends CustomTableInputFormat<Tuple1<CaseID>> {
+
+    private String tableNameString = "Case";
     private String startRow = null;
-    private String endRow = null;
+    private String endRow = null ;
 
-    public HbaseInputForm_Order setStartRow(long startRow) {
-        this.startRow = HBaseOperator.generateRowkey(HBaseOperator.maxIndex, startRow);
+    public HbaseInputForm_Case setStartRow(String startRow) {
+        this.startRow = startRow;
         return this;
     }
 
-    public HbaseInputForm_Order setEndRow(long endRow) {
-        this.endRow = HBaseOperator.generateRowkey(HBaseOperator.maxIndex,endRow);
-        return this;
+    public HbaseInputForm_Case setEndRow(String endRow) {
+        this.endRow = endRow;
+        return this ;
     }
 
     @Override
@@ -59,38 +62,21 @@ public class HbaseInputForm_Order extends CustomTableInputFormat<Tuple1<Order>> 
 
     }
 
-
-    /**
-     * Returns an instance of Scan that retrieves the required subset of records from the HBase table.
-     *
-     * @return The appropriate instance of Scan for this usecase.
-     */
     @Override
     protected Scan getScanner() {
+        // TODO Auto-generated method stub
         return scan;
     }
 
-    /**
-     * What table is to be read.
-     * Per instance of a TableInputFormat derivative only a single tablename is possible.
-     *
-     * @return The name of the table
-     */
     @Override
     protected String getTableName() {
+        // TODO Auto-generated method stub
         return tableNameString;
     }
 
-    /**
-     * The output from HBase is always an instance of {@link Result}.
-     * This method is to copy the data in the Result instance into the required {@link Tuple}
-     *
-     * @param r The Result instance from HBase that needs to be converted
-     * @return The appropriate instance of {@link Tuple} that contains the needed information.
-     */
     @Override
-    protected Tuple1<Order> mapResultToTuple(Result r) {
-        String rowKey = Bytes.toString(r.getRow());
+    protected Tuple1<CaseID> mapResultToTuple(Result r) {
+        // String rowKey = Bytes.toString(r.getRow());
 
         ArrayList<String> values = new ArrayList<String>();
         for (Cell cell : r.listCells()){
@@ -98,7 +84,7 @@ public class HbaseInputForm_Order extends CustomTableInputFormat<Tuple1<Order>> 
             values.add(value);
         }
         
-        return Tuple1.of(new Order(rowKey, values.get(0),values.get(1)));
+        return Tuple1.of(new CaseID(values.get(0), values.get(1)));
     }
     
 }
