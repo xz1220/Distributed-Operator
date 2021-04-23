@@ -18,6 +18,14 @@ public class joinwithsink {
             e.printStackTrace();
         }
     }
+
+    public static void joinWithSink(String joinKey) {
+        /**
+         * 创建执行环境 并读取数据
+         */
+        ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+        
+    }
     
     public static void joinWithoutSink() throws Exception {
         // Get the run-time
