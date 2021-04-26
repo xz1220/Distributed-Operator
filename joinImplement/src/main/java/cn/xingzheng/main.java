@@ -41,8 +41,16 @@ public class main {
        */
       Joinwithsink joinwithsink = new Joinwithsink();
       // joinwithsink.readAndSinkTemp();
-    //  joinwithsink.readTempAndJoin();
-      joinwithsink.joinWithSink_nativeJoinFunction();
+      long start  = System.currentTimeMillis();
+      joinwithsink.readTempAndJoin();
+      long end = System.currentTimeMillis();
+      long second = (end - start) /1000;
+      System.out.println(second);
 
+      start  = System.currentTimeMillis();
+      joinwithsink.joinWithSink_nativeJoinFunction();
+      end = System.currentTimeMillis();
+      second = (end - start) /1000;
+      System.out.println(second);
   }
 }

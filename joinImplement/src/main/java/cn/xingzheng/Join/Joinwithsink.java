@@ -29,7 +29,7 @@ import java.util.Collection;
 
 public class Joinwithsink {
 
-    public long batch_size = 500000;
+    public long batch_size = 50000;
 
     /**
      * setBatchSize is defined to describe how many datas will be loaded into the memory in one time.
@@ -146,7 +146,7 @@ public class Joinwithsink {
         * 创建运行时批处理环境
          */
         long New_Batch = HBaseOperator.maxOrder / batch_size;
-        for (long i = 0; i <= New_Batch; i++) {
+        for (long i = 0; i <= 2; i++) {
             String startRowKey = HBaseOperator.generateOrder(i*batch_size);
             String endRowKey = HBaseOperator.generateOrder((i+1)*batch_size);
             
@@ -155,30 +155,6 @@ public class Joinwithsink {
             DataSource<Tuple2<String, String>> tempCase = env.createInput((new HbaseInputForm_String()).setStartRow(startRowKey).setEndRow(endRowKey));
             DataSource<Tuple2<String, String>> tempOrder = env.createInput((new HbaseInputForm_String2()).setStartRow(startRowKey).setEndRow(endRowKey));
            
-        //     DataSet<String> test = tempCase.map(new MapFunction<Tuple2<String,String>,String>(){
-
-        //        @Override
-        //        public String map(Tuple2<String, String> value) throws Exception {
-        //            // TODO Auto-generated method stub
-        //            System.out.println(startRowKey + " " + endRowKey );
-        //            return value.f0 + " " + value.f1;
-        //        }
-               
-        //    });
-
-//            DataSet<String> result = tempOrder.join(tempCase)
-//                               .where(0)
-//                               .equalTo(0)
-//                               .with(new FlatJoinFunction<Tuple2<String,String>,Tuple2<String,String>,String>(){
-//
-//                                   @Override
-//                                   public void join(Tuple2<String, String> first, Tuple2<String, String> second,
-//                                           Collector<String> out) throws Exception {
-//                                           out.collect(first.f1 + " " + second.f1);
-//                                   }
-//
-//                               });
-
             DataSet<String> resultUsingMap = tempOrder.flatMap(new  RichFlatMapFunction<Tuple2<String, String>, String>(){
 
                 @Override
@@ -206,7 +182,7 @@ public class Joinwithsink {
         //    test.print();
        }
        
-       env.execute();
+    //    env.execute();
     }
 
     public void joinWithSink_nativeJoinFunction() throws Exception{
@@ -216,7 +192,7 @@ public class Joinwithsink {
         * 创建运行时批处理环境
          */
         long New_Batch = HBaseOperator.maxOrder / batch_size;
-        for (long i = 0; i <= New_Batch; i++) {
+        for (long i = 0; i <= 2; i++) {
             String startRowKey = HBaseOperator.generateOrder(i*batch_size);
             String endRowKey = HBaseOperator.generateOrder((i+1)*batch_size);
             
@@ -241,7 +217,7 @@ public class Joinwithsink {
             result.print();
        }
        
-       env.execute();
+    //    env.execute();
     }
     
     public void main(String[] args) throws Exception {
