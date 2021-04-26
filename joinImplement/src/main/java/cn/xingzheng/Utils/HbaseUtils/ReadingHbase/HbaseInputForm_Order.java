@@ -90,7 +90,7 @@ public class HbaseInputForm_Order extends CustomTableInputFormat<Tuple1<Order>> 
      */
     @Override
     protected Tuple1<Order> mapResultToTuple(Result r) {
-        String rowKey = Bytes.toString(r.getRow());
+//        String rowKey = Bytes.toString(r.getRow());
 
         ArrayList<String> values = new ArrayList<String>();
         for (Cell cell : r.listCells()){
@@ -98,7 +98,7 @@ public class HbaseInputForm_Order extends CustomTableInputFormat<Tuple1<Order>> 
             values.add(value);
         }
         
-        return Tuple1.of(new Order(rowKey, values.get(0),values.get(1)));
+        return Tuple1.of(new Order(values.get(0),values.get(1)));
     }
     
 }

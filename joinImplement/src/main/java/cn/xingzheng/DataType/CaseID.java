@@ -21,7 +21,7 @@ public class CaseID implements Serializable {
 
     @Override
     public String toString() {
-        return order + "," + caseID;
+        return caseID + "," + order;
     }
 
 }

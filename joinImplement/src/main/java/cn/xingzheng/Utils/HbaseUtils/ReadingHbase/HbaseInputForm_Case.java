@@ -1,10 +1,9 @@
 package cn.xingzheng.Utils.HbaseUtils.ReadingHbase;
 
-import cn.xingzheng.DataType.Order;
+import cn.xingzheng.DataType.CaseID;
 import cn.xingzheng.Utils.HbaseUtils.Base.CustomTableInputFormat;
 import cn.xingzheng.Utils.HbaseUtils.Base.HBaseOperator;
 import cn.xingzheng.Utils.HbaseUtils.Base.HbaseBaseUtil;
-import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.configuration.Configuration;
 import org.apache.hadoop.hbase.Cell;
@@ -15,22 +14,19 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import cn.xingzheng.DataType.CaseID;
-import cn.xingzheng.Utils.HbaseUtils.Base.CustomTableInputFormat;
-
 public class HbaseInputForm_Case extends CustomTableInputFormat<Tuple1<CaseID>> {
 
     private String tableNameString = "Case";
     private String startRow = null;
     private String endRow = null ;
 
-    public HbaseInputForm_Case setStartRow(String startRow) {
-        this.startRow = startRow;
+    public HbaseInputForm_Case setStartRow(long startRow) {
+        this.startRow = HBaseOperator.generateRowkey(HBaseOperator.maxIndex, startRow);
         return this;
     }
 
-    public HbaseInputForm_Case setEndRow(String endRow) {
-        this.endRow = endRow;
+    public HbaseInputForm_Case setEndRow(long endRow) {
+        this.endRow = HBaseOperator.generateRowkey(HBaseOperator.maxIndex, endRow);
         return this ;
     }
 
@@ -40,6 +36,7 @@ public class HbaseInputForm_Case extends CustomTableInputFormat<Tuple1<CaseID>> 
         org.apache.hadoop.conf.Configuration config = HbaseBaseUtil.getConfiguration();
         // ParameterTool parameterTool = (ParameterTool) getRuntimeContext().getExecutionConfig().getGlobalJobParameters();
         // String tableNameString = parameterTool.getRequired("innerTbale");
+        // TableName tableName =TableName.valueOf(parameters.getString("tableName"," "));
         TableName tableName =TableName.valueOf(tableNameString);
 
         try {

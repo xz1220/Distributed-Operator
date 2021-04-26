@@ -1,29 +1,29 @@
 package cn.xingzheng.Utils.HbaseUtils.WritingHbase;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.io.*;
-
+import cn.xingzheng.Utils.HbaseUtils.Base.HBaseOperator;
+import cn.xingzheng.Utils.HbaseUtils.Base.HbaseBaseUtil;
 import org.apache.flink.api.common.io.OutputFormat;
 import org.apache.flink.configuration.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.BufferedMutator;
-import org.apache.hadoop.hbase.client.BufferedMutatorParams;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import cn.xingzheng.Utils.HbaseUtils.Base.*;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class HbaseOutputFormat_test implements OutputFormat<String> {
 
-    private String tableNameString = "OutputV1";
+    private String tableNameString = "OutputV2";
     private Connection conn = null;
     private BufferedMutator mutator;
     private int count;
     private ArrayList<String> columns = null ;
+    private int rowKeyID = 0;
+
+    public HbaseOutputFormat_test setRowkeyID(int id) {
+        this.rowKeyID = id;
+        return this;
+    }
 
     public HbaseOutputFormat_test setColumns(ArrayList<String> columns) {
         this.columns = columns;
@@ -56,7 +56,7 @@ public class HbaseOutputFormat_test implements OutputFormat<String> {
 
             if (!conn.getAdmin().tableExists(tableName)) {
                 HBaseOperator hbaseOperator = new HBaseOperator();
-                hbaseOperator.createTable(tableName, columns);
+                HBaseOperator.createTable(tableName, columns);
             }
             
         }catch(Exception e) {
@@ -72,7 +72,8 @@ public class HbaseOutputFormat_test implements OutputFormat<String> {
     public void writeRecord(String record) throws IOException {
         // TODO Auto-generated method stub
         String[] array = record.split(",");
-        Put put = new Put(Bytes.toBytes(array[1]));
+        // System.out.println(array);
+        Put put = new Put(Bytes.toBytes(array[rowKeyID]));
 
         for(int i = 0; i< columns.size() ; i++) {
             put.addColumn(Bytes.toBytes(columns.get(i)), Bytes.toBytes(columns.get(i).toLowerCase()), Bytes.toBytes(array[i]));

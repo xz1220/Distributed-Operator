@@ -28,8 +28,9 @@ public class HBaseOperator {
         }
     }
 
-    public static long maxIndex = 1<<30;
-    public static String tempTableName = "OutputV1";
+    public static long maxIndex = 1<<25;
+    public static long maxOrder = 99999999;
+    public static String tempTableName = "test";
 
     /**
      * 创建只有一个列簇的表
@@ -410,14 +411,14 @@ public class HBaseOperator {
         ArrayList<String> columnFamilys = new ArrayList<String>();
         // String[] columnFamilys = {"Order","UserID"};
         columnFamilys.add("Order");
-        columnFamilys.add("UserID");
+        columnFamilys.add("UserID"); 
         createTable(tableName, columnFamilys);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        long batch_size = 1<<15 ; 
+        long batch_size = 1<<10 ; 
         long count = 0;
         list.clear();
-        for(long i = (162594817); i< (maxIndex); i ++) {
+        for(long i = 0; i< (maxIndex); i ++) {
             count ++;
             String rowKey = generateRowkey(maxIndex, i);
             String order = randomOrder();
@@ -444,6 +445,7 @@ public class HBaseOperator {
         /**
          * 初始化表名以及列名
          */
+        deleteTable("Case");
         TableName tableName = TableName.valueOf("Case");
         ArrayList<String> columnFamilys = new ArrayList<String>();
         // String[] columnFamilys = {"Order","UserID"};
@@ -455,15 +457,15 @@ public class HBaseOperator {
         long batch_size = 1<<15 ; 
         long count = 0;
         list.clear();
-        for(long i = 47564; i< (maxIndex/4); i ++) {
+        for(long i = 0; i< (maxIndex); i ++) {
             count ++;
             String rowKey = generateRowkey(maxIndex, i);
             String order = randomOrder();
             String caseID = generateRandomCase();
             // System.out.println("rowkey: " + rowKey + " Order: " + order + " user: " + user);
-            list.add(insertValueFactory(rowKey,"Order","order", order));
             list.add(insertValueFactory(rowKey,"CaseID","caseID", caseID));
-
+            list.add(insertValueFactory(rowKey,"Order","order", order));
+            
             if (count == batch_size) {
                 insertMany(tableName,list);
                 list.clear();
@@ -487,10 +489,19 @@ public class HBaseOperator {
     public static String randomOrder() {
         String order = "";
         Random random = new Random();
-        for(int orderLength = 0; orderLength < 10 ; orderLength ++){
+        for(int orderLength = 0; orderLength < 8 ; orderLength ++){
             order+=random.nextInt(10);
         }
         return order;
+    }
+
+    public static String generateOrder(long currentIndex) {
+        int length = Long.toString(maxOrder).length();
+        String index = Long.toString(currentIndex);
+        while(index.length() < length) {
+            index = "0" + index;
+        }
+        return index;
     }
 
     public static String randomUser() {
@@ -517,11 +528,31 @@ public class HBaseOperator {
         }
     }
 
+    /**
+     * 删除表
+     * @param args
+     * @throws Exception
+     */
+    public static void deleteTable(String tableName) throws Exception{
+        Admin admin = conn.getAdmin();
+        admin.disableTable(TableName.valueOf(tableName));
+        admin.deleteTable(TableName.valueOf(tableName));
+        admin.close();
+    }
+
+    public static void testDeleteTable() throws Exception {
+        createTable();
+        deleteTable(tempTableName);
+    }
+
     public static void main(String[] args) throws Exception {
         /**
          * 插入调用表
          */
-        insertCase();
+        // insterUser();
+        // insterOrder();
+       insertCase();
+        // testDeleteTable();
     }
 
 }
