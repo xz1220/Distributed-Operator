@@ -9,6 +9,8 @@ import cn.xingzheng.Utils.HbaseUtils.ReadingHbase.HbaseInputForm_Order;
 import cn.xingzheng.Utils.HbaseUtils.ReadingHbase.HbaseInputForm_String;
 import cn.xingzheng.Utils.HbaseUtils.ReadingHbase.HbaseInputForm_String2;
 import cn.xingzheng.Utils.HbaseUtils.WritingHbase.HbaseOutputFormat_test;
+
+import org.apache.flink.api.common.functions.FlatJoinFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.java.DataSet;
@@ -188,7 +190,7 @@ public class Joinwithsink {
                     for (Tuple2<String, String> key : broadcastVariable) {
                         // System.out.println("JoinKey : " + key.f0 + "  Case:" + key.f1 + "  Order:" + value.f1);
                         if (key.f0.equals(value.f0)) {
-                            System.out.println("JoinKey : " + key.f0 + "  Case:" + key.f1 + "  Order:" + value.f1);
+                            // System.out.println("JoinKey : " + key.f0 + "  Case:" + key.f1 + "  Order:" + value.f1);
                             out.collect("JoinKey : " + key.f0 + "  Case:" + key.f1 + "  Order:" + value.f1);
                             break;
                         }else if (key.f0.compareTo(value.f0) >0) {
@@ -207,6 +209,40 @@ public class Joinwithsink {
        env.execute();
     }
 
+    public void joinWithSink_nativeJoinFunction() throws Exception{
+
+        ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+        /**
+        * 创建运行时批处理环境
+         */
+        long New_Batch = HBaseOperator.maxOrder / batch_size;
+        for (long i = 0; i <= New_Batch; i++) {
+            String startRowKey = HBaseOperator.generateOrder(i*batch_size);
+            String endRowKey = HBaseOperator.generateOrder((i+1)*batch_size);
+            
+            System.out.println("batch: " + i + " StartRowKey: " + startRowKey + "  EndRowKey:" + endRowKey);
+
+            DataSource<Tuple2<String, String>> tempCase = env.createInput((new HbaseInputForm_String()).setStartRow(startRowKey).setEndRow(endRowKey));
+            DataSource<Tuple2<String, String>> tempOrder = env.createInput((new HbaseInputForm_String2()).setStartRow(startRowKey).setEndRow(endRowKey));
+           
+
+           DataSet<String> result = tempOrder.join(tempCase)
+                              .where(0)
+                              .equalTo(0)
+                              .with(new FlatJoinFunction<Tuple2<String,String>,Tuple2<String,String>,String>(){
+
+                                  @Override
+                                  public void join(Tuple2<String, String> first, Tuple2<String, String> second,
+                                          Collector<String> out) throws Exception {
+                                          out.collect(first.f1 + " " + second.f1);
+                                  }
+
+                              });
+            result.print();
+       }
+       
+       env.execute();
+    }
     
     public void main(String[] args) throws Exception {
         try {

@@ -41,7 +41,8 @@ public class main {
        */
       Joinwithsink joinwithsink = new Joinwithsink();
       // joinwithsink.readAndSinkTemp();
-     joinwithsink.readTempAndJoin();
+    //  joinwithsink.readTempAndJoin();
+      joinwithsink.joinWithSink_nativeJoinFunction();
 
   }
 }
