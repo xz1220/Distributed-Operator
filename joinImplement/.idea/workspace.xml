@@ -5,18 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="842a1324-0c68-486d-b493-ad471f4dd0da" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Join/Joinwithsink.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/CaseID.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/CaseID.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/DataType/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Join/JoinWithoutSink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Join/JoinWithoutSink.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Join/joinwithsink.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/Base/HBaseOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/Base/HBaseOperator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/ReadingHbase/HbaseInputForm_Case.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/ReadingHbase/HbaseInputForm_Case.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/ReadingHbase/HbaseInputForm_Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/ReadingHbase/HbaseInputForm_Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/WritingHbase/HbaseOutputFormat_test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/Utils/HbaseUtils/WritingHbase/HbaseOutputFormat_test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/xingzheng/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/xingzheng/main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

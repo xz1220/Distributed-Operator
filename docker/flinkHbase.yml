@@ -163,49 +163,7 @@ services:
         ipv4_address: 172.27.0.11
     volumes:
       - /home/xingzheng/Distributed-Operator/output/taskmanager:/home
-  # jobmanager:
-  #   image: danxing/flink:latest
-  #   ports:
-  #     - "8081:8081"
-  #   command: jobmanager
-  #   environment:
-  #     - |
-  #       FLINK_PROPERTIES=
-  #       jobmanager.rpc.address: jobmanager
-    # networks:
-    #   flinkHbase: 
-    #     ipv4_address: 172.27.0.10
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: 0.1
-    #       memory: 1G
-    #     reservations:
-    #       cpus: 0.05
-    #       memory: 500M
-
-  # taskmanager:
-  #   image: danxing/flink:latest
-  #   depends_on:
-  #     - jobmanager
-  #   command: taskmanager
-  #   scale: 4
-  #   environment:
-  #     - |
-  #       FLINK_PROPERTIES=
-  #       jobmanager.rpc.address: jobmanager
-  #       taskmanager.numberOfTaskSlots: 4
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: 0.1
-    #       memory: 1G
-    #     reservations:
-    #       cpus: 0.05
-    #       memory: 500M
-    
-
-
+  
 
 
 networks:
